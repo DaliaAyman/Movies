@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 /**
@@ -16,14 +18,17 @@ import java.util.ArrayList;
 public class CustomGridViewAdapter extends ArrayAdapter {
     Context context;
     int layoutResourceId;
-    ArrayList<Integer> images = new ArrayList<Integer>();
+    ArrayList<String> imagesUrls = new ArrayList<String>();
 
-    public CustomGridViewAdapter(Context context, int resource, ArrayList objects) {
-        super(context, resource, objects);
+    public CustomGridViewAdapter(Context context, int resource) {
+        super(context, resource);
 
         this.layoutResourceId = resource;
         this.context = context;
-        this.images = objects;
+    }
+
+    public void setImagesUrlsArrayList(ArrayList<String> imagesUrls) {
+        this.imagesUrls = imagesUrls;
     }
 
     @Override
@@ -35,7 +40,9 @@ public class CustomGridViewAdapter extends ArrayAdapter {
             convertView = inflater.inflate(R.layout.movie_grid_item, null);
 
             ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_image);
-            imageView.setImageResource(images.get(position));
+            //imageView.setImageResource(images.get(position));
+
+            Picasso.with(context).load("http://image.tmdb.org/t/p/w185/" + imagesUrls.get(position)).into(imageView);
 
         }else{
 

@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import java.util.ArrayList;
-
 
 public class HomeActivity extends ActionBarActivity {
 
@@ -62,7 +60,7 @@ public class HomeActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-            ArrayList images = new ArrayList();
+            /*ArrayList images = new ArrayList();
             images.add(R.drawable.ic_launcher);
             images.add(R.drawable.ic_launcher);
             images.add(R.drawable.ic_launcher);
@@ -70,7 +68,14 @@ public class HomeActivity extends ActionBarActivity {
             CustomGridViewAdapter adapter = new CustomGridViewAdapter(getActivity(), R.layout.movie_grid_item, images);
 
             GridView gridView = (GridView)rootView.findViewById(R.id.movies_grid);
-            gridView.setAdapter(adapter);
+            gridView.setAdapter(adapter);*/
+
+            CustomGridViewAdapter adapter = new CustomGridViewAdapter(getActivity(), R.layout.movie_grid_item);
+
+            GridView gridView = (GridView)rootView.findViewById(R.id.movies_grid);
+
+            FetchMoviesTask task = new FetchMoviesTask(adapter, gridView);
+            task.execute();
 
             return rootView;
         }
