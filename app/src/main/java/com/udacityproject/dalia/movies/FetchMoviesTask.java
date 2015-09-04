@@ -30,7 +30,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, Movie[]> {
     //ArrayList<String> moviesImages = new ArrayList<String>();
 
     //TODO remove before publishing to Github
-    private final static String API_KEY = "7c8fd8219025b80ee4f7471ac5571281";
+    private final static String API_KEY = "";
     private final static String MOVIES_BASE_URL
             = "http://api.themoviedb.org/3/discover/movie";
     private final static String SORT_BY_PARAM = "sort_by";

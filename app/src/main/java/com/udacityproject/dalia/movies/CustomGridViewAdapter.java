@@ -44,7 +44,7 @@ public class CustomGridViewAdapter extends ArrayAdapter {
 
             ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_image);
             Picasso.with(context).load("http://image.tmdb.org/t/p/w185//" + movieArrayList.get(position).getPosterPath())
-                    //.placeholder()
+                    .placeholder(R.drawable.movie_loading)
                     .resize(width/2, height/2)
                     .centerCrop()
 

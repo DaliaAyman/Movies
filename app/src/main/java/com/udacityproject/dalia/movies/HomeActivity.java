@@ -1,13 +1,16 @@
 package com.udacityproject.dalia.movies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ public class HomeActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
         }
 
@@ -72,6 +76,20 @@ public class HomeActivity extends ActionBarActivity {
 
             FetchMoviesTask task = new FetchMoviesTask(getActivity(), gridView);
             task.execute();
+
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Movie movie = (Movie)parent.getItemAtPosition(position);
+                    Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+                    intent.putExtra("title", movie.getTitle());
+                    intent.putExtra("overview", movie.getOverview());
+                    intent.putExtra("poster_path", movie.getPosterPath());
+                    Log.d("grid", "BEFORE INTENT average: " + movie.getVoteAverage());
+                    intent.putExtra("vote_average", movie.getVoteAverage());
+                    startActivity(intent);
+                }
+            });
 
             return rootView;
         }
