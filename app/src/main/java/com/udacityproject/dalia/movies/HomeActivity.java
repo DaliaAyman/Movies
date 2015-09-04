@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import java.util.ArrayList;
+
 
 public class HomeActivity extends ActionBarActivity {
 
@@ -51,6 +53,9 @@ public class HomeActivity extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+        private CustomGridViewAdapter adapter;
+        private ArrayList<Movie> moviesList = new ArrayList<Movie>();
+        GridView gridView;
 
         public PlaceholderFragment() {
         }
@@ -60,21 +65,12 @@ public class HomeActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-            /*ArrayList images = new ArrayList();
-            images.add(R.drawable.ic_launcher);
-            images.add(R.drawable.ic_launcher);
-            images.add(R.drawable.ic_launcher);
-            images.add(R.drawable.ic_launcher);
-            CustomGridViewAdapter adapter = new CustomGridViewAdapter(getActivity(), R.layout.movie_grid_item, images);
+            adapter = new CustomGridViewAdapter(getActivity(), R.layout.movie_grid_item, moviesList);
 
-            GridView gridView = (GridView)rootView.findViewById(R.id.movies_grid);
-            gridView.setAdapter(adapter);*/
+            gridView = (GridView)rootView.findViewById(R.id.movies_grid);
+            //gridView.setAdapter(adapter);
 
-            CustomGridViewAdapter adapter = new CustomGridViewAdapter(getActivity(), R.layout.movie_grid_item);
-
-            GridView gridView = (GridView)rootView.findViewById(R.id.movies_grid);
-
-            FetchMoviesTask task = new FetchMoviesTask(adapter, gridView);
+            FetchMoviesTask task = new FetchMoviesTask(getActivity(), gridView);
             task.execute();
 
             return rootView;

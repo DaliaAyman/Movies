@@ -2,6 +2,7 @@ package com.udacityproject.dalia.movies;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,35 +19,40 @@ import java.util.ArrayList;
 public class CustomGridViewAdapter extends ArrayAdapter {
     Context context;
     int layoutResourceId;
-    ArrayList<String> imagesUrls = new ArrayList<String>();
+    ArrayList<Movie> movieArrayList = new ArrayList<Movie>();
 
-    public CustomGridViewAdapter(Context context, int resource) {
-        super(context, resource);
+    int width;
+    int height;
+
+    public CustomGridViewAdapter(Context context, int resource, ArrayList<Movie> arrayList) {
+        super(context, resource, arrayList);
 
         this.layoutResourceId = resource;
         this.context = context;
-    }
-
-    public void setImagesUrlsArrayList(ArrayList<String> imagesUrls) {
-        this.imagesUrls = imagesUrls;
+        movieArrayList = arrayList;
+        width = context.getResources().getDisplayMetrics().widthPixels;
+        height = context.getResources().getDisplayMetrics().heightPixels;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if(convertView == null){
+        Log.d("grid", "start of getView");
+        //if(convertView == null){
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            //convertView = inflater.inflate(R.)
-            convertView = inflater.inflate(R.layout.movie_grid_item, null);
+            convertView = inflater.inflate(layoutResourceId, null);
 
             ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_image);
-            //imageView.setImageResource(images.get(position));
+            Picasso.with(context).load("http://image.tmdb.org/t/p/w185//" + movieArrayList.get(position).getPosterPath())
+                    //.placeholder()
+                    .resize(width/2, height/2)
+                    .centerCrop()
 
-            Picasso.with(context).load("http://image.tmdb.org/t/p/w185/" + imagesUrls.get(position)).into(imageView);
+                    .into(imageView);
 
-        }else{
-
-        }
+//        }else{
+//
+//        }
 
 
         return convertView;

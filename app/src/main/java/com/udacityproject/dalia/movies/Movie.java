@@ -16,6 +16,12 @@ public class Movie {
     @SerializedName("vote_average")
     private double voteAverage;
 
+    public Movie(String title, String overview, String posterPath, double voteAverage){
+        this.title = title;
+        this.overview = overview;
+        this.posterPath = posterPath;
+        this.voteAverage = voteAverage;
+    }
     public String getTitle() {
         return title;
     }
