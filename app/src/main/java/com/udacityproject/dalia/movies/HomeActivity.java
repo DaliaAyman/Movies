@@ -1,7 +1,9 @@
 package com.udacityproject.dalia.movies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -46,7 +48,8 @@ public class HomeActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -74,8 +77,15 @@ public class HomeActivity extends ActionBarActivity {
             gridView = (GridView)rootView.findViewById(R.id.movies_grid);
             //gridView.setAdapter(adapter);
 
+
+            SharedPreferences sharedPrefs =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortType = sharedPrefs.getString(
+                    getString(R.string.pref_sort_key_most_popular),
+                    getString(R.string.pref_sort_key_high_rated));
+
             FetchMoviesTask task = new FetchMoviesTask(getActivity(), gridView);
-            task.execute();
+            task.execute(sortType);
 
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -85,7 +95,6 @@ public class HomeActivity extends ActionBarActivity {
                     intent.putExtra("title", movie.getTitle());
                     intent.putExtra("overview", movie.getOverview());
                     intent.putExtra("poster_path", movie.getPosterPath());
-                    Log.d("grid", "BEFORE INTENT average: " + movie.getVoteAverage());
                     intent.putExtra("vote_average", movie.getVoteAverage());
                     startActivity(intent);
                 }

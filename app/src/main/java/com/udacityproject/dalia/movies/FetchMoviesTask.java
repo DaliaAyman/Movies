@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by Dalia on 9/2/2015.
  */
-public class FetchMoviesTask extends AsyncTask<Void, Void, Movie[]> {
+public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
     CustomGridViewAdapter mAdapter;
     GridView mGridView;
     Context mContext;
@@ -33,6 +33,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, Movie[]> {
     private final static String API_KEY = "";
     private final static String MOVIES_BASE_URL
             = "http://api.themoviedb.org/3/discover/movie";
+
     private final static String SORT_BY_PARAM = "sort_by";
     private final static String API_PARAM = "api_key";
 
@@ -45,17 +46,18 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, Movie[]> {
     }
 
     @Override
-    protected Movie[] doInBackground(Void... params) {
+    protected Movie[] doInBackground(String... options) {
         HttpURLConnection httpURLConnection = null;
         BufferedReader bufferedReader = null;
 
         moviesJSONStr = null; //JSON Response
 
         try {
-
+            String sortType = options[0];
+            Log.d("grid", "sortType: " + sortType);
             Uri builtUri = Uri.parse(MOVIES_BASE_URL)
                     .buildUpon()
-                    .appendQueryParameter(SORT_BY_PARAM, "popularity.desc")
+                    .appendQueryParameter(SORT_BY_PARAM, sortType + ".desc")
                     .appendQueryParameter(API_PARAM, API_KEY)
                     .build();
 
