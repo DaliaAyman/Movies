@@ -1,4 +1,4 @@
-package com.udacityproject.dalia.movies;
+package com.udacityproject.dalia.movies.model;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,13 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.udacityproject.dalia.movies.R;
 
 import java.util.ArrayList;
 
 /**
  * Created by Dalia on 8/25/2015.
  */
-public class CustomGridViewAdapter extends ArrayAdapter {
+public class MoviesGridViewAdapter extends ArrayAdapter {
     private Context context;
     private int layoutResourceId;
     private ArrayList<Movie> movieArrayList = new ArrayList<Movie>();
@@ -23,7 +24,7 @@ public class CustomGridViewAdapter extends ArrayAdapter {
     int width;
     int height;
 
-    public CustomGridViewAdapter(Context context, int resource, ArrayList<Movie> arrayList) {
+    public MoviesGridViewAdapter(Context context, int resource, ArrayList<Movie> arrayList) {
         super(context, resource, arrayList);
 
         this.layoutResourceId = resource;

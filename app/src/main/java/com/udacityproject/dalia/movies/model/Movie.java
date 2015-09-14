@@ -1,4 +1,4 @@
-package com.udacityproject.dalia.movies;
+package com.udacityproject.dalia.movies.model;
 
 import com.google.gson.annotations.SerializedName;
 

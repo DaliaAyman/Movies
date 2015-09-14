@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.GridView;
 
+import com.udacityproject.dalia.movies.model.Movie;
+import com.udacityproject.dalia.movies.model.MoviesGridViewAdapter;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +25,7 @@ import java.util.ArrayList;
  * Created by Dalia on 9/2/2015.
  */
 public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
-    CustomGridViewAdapter mAdapter;
+    MoviesGridViewAdapter mAdapter;
     GridView mGridView;
     Context mContext;
 
@@ -150,7 +153,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             for (Movie m1: movies){
                 arrayList.add(m1);
             }
-            mAdapter = new CustomGridViewAdapter(mContext, R.layout.movie_grid_item, arrayList);
+            mAdapter = new MoviesGridViewAdapter(mContext, R.layout.movie_grid_item, arrayList);
             mGridView.setAdapter(mAdapter);
 
         }
