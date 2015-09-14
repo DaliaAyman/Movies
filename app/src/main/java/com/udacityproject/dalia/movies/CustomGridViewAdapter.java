@@ -16,9 +16,9 @@ import java.util.ArrayList;
  * Created by Dalia on 8/25/2015.
  */
 public class CustomGridViewAdapter extends ArrayAdapter {
-    Context context;
-    int layoutResourceId;
-    ArrayList<Movie> movieArrayList = new ArrayList<Movie>();
+    private Context context;
+    private int layoutResourceId;
+    private ArrayList<Movie> movieArrayList = new ArrayList<Movie>();
 
     int width;
     int height;

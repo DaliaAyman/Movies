@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.udacityproject.dalia.movies.MovieDetailActivity"/>
+      <point      
+        x = "1532"      
+        y = "88"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.udacityproject.dalia.movies.SettingsActivity"/>
+      <point      
+        x = "2068"      
+        y = "300"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.udacityproject.dalia.movies.HomeActivity"/>
+      <point      
+        x = "188"      
+        y = "136"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>

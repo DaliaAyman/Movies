@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,9 +61,31 @@ public class HomeActivity extends ActionBarActivity {
     public static class PlaceholderFragment extends Fragment {
         private CustomGridViewAdapter adapter;
         private ArrayList<Movie> moviesList = new ArrayList<Movie>();
-        GridView gridView;
+        private GridView gridView;
+
+        private FetchMoviesTask task;
 
         public PlaceholderFragment() {
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+
+            updateMovies();
+        }
+
+        public void updateMovies(){
+            SharedPreferences sharedPrefs =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortType = sharedPrefs.getString(
+                    getString(R.string.pref_sort_by_key),
+                    getString(R.string.pref_sort_key_most_popular_label));
+            if(task != null){
+                task.cancel(true);
+            }
+            task = new FetchMoviesTask(getActivity(), gridView);
+            task.execute(sortType);
         }
 
         @Override
@@ -77,15 +98,16 @@ public class HomeActivity extends ActionBarActivity {
             gridView = (GridView)rootView.findViewById(R.id.movies_grid);
             //gridView.setAdapter(adapter);
 
+            updateMovies();
 
-            SharedPreferences sharedPrefs =
+            /*SharedPreferences sharedPrefs =
                     PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sortType = sharedPrefs.getString(
                     getString(R.string.pref_sort_key_most_popular),
                     getString(R.string.pref_sort_key_high_rated));
 
             FetchMoviesTask task = new FetchMoviesTask(getActivity(), gridView);
-            task.execute(sortType);
+            task.execute(sortType);*/
 
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

@@ -26,11 +26,8 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
     GridView mGridView;
     Context mContext;
 
-    ArrayList<Movie> moviesArrayList = new ArrayList<Movie>();
-    //ArrayList<String> moviesImages = new ArrayList<String>();
-
     //TODO remove before publishing to Github
-    private final static String API_KEY = "";
+    private final static String API_KEY = "7c8fd8219025b80ee4f7471ac5571281";
     private final static String MOVIES_BASE_URL
             = "http://api.themoviedb.org/3/discover/movie";
 
@@ -132,9 +129,8 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             double voteAverage = movieObj.getDouble("vote_average");
 
             Movie m = new Movie(title, overview, posterPath, voteAverage);
-            Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
+            //Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
             resultObjs[i] = m;
-            moviesArrayList.add(m);
         }
 
         return resultObjs;
@@ -156,6 +152,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             }
             mAdapter = new CustomGridViewAdapter(mContext, R.layout.movie_grid_item, arrayList);
             mGridView.setAdapter(mAdapter);
+
         }
     }
 
