@@ -1,26 +1,22 @@
 package com.udacityproject.dalia.movies.model;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by Dalia on 9/3/2015.
  */
 public class Movie {
 
-    @SerializedName("title")
     private String title;
-    @SerializedName("overview")
     private String overview;
-    @SerializedName("poster_path")
     private String posterPath;
-    @SerializedName("vote_average")
     private double voteAverage;
+    private String releaseDate;
 
-    public Movie(String title, String overview, String posterPath, double voteAverage){
+    public Movie(String title, String overview, String posterPath, double voteAverage, String releaseDate){
         this.title = title;
         this.overview = overview;
         this.posterPath = posterPath;
         this.voteAverage = voteAverage;
+        this.releaseDate = releaseDate;
     }
     public String getTitle() {
         return title;
@@ -52,5 +48,13 @@ public class Movie {
 
     public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 }

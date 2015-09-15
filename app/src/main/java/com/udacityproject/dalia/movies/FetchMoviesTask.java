@@ -54,7 +54,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
         try {
             String sortType = options[0];
-            Log.d("grid", "sortType: " + sortType);
+            // http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=[YOUR API KEY]
             Uri builtUri = Uri.parse(MOVIES_BASE_URL)
                     .buildUpon()
                     .appendQueryParameter(SORT_BY_PARAM, sortType + ".desc")
@@ -130,8 +130,9 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             String overview = movieObj.getString("overview");
             String posterPath = movieObj.getString("poster_path");
             double voteAverage = movieObj.getDouble("vote_average");
+            String releaseDate = movieObj.getString("release_date");
 
-            Movie m = new Movie(title, overview, posterPath, voteAverage);
+            Movie m = new Movie(title, overview, posterPath, voteAverage, releaseDate);
             //Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
             resultObjs[i] = m;
         }

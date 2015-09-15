@@ -57,18 +57,9 @@ public class MoviesHolderFragment extends Fragment {
         adapter = new MoviesGridViewAdapter(getActivity(), R.layout.movie_grid_item, moviesList);
 
         gridView = (GridView)rootView.findViewById(R.id.movies_grid);
-        //gridView.setAdapter(adapter);
 
         updateMovies();
 
-            /*SharedPreferences sharedPrefs =
-                    PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String sortType = sharedPrefs.getString(
-                    getString(R.string.pref_sort_key_most_popular),
-                    getString(R.string.pref_sort_key_high_rated));
-
-            FetchMoviesTask task = new FetchMoviesTask(getActivity(), gridView);
-            task.execute(sortType);*/
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -79,6 +70,7 @@ public class MoviesHolderFragment extends Fragment {
                 intent.putExtra("overview", movie.getOverview());
                 intent.putExtra("poster_path", movie.getPosterPath());
                 intent.putExtra("vote_average", movie.getVoteAverage());
+                intent.putExtra("release_date", movie.getReleaseDate());
                 startActivity(intent);
             }
         });

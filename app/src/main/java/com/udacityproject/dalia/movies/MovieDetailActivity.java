@@ -22,6 +22,7 @@ public class MovieDetailActivity extends ActionBarActivity {
         Bundle bundle = getIntent().getExtras();
 
         TextView title = (TextView)findViewById(R.id.movie_title);
+        TextView releaseDate = (TextView)findViewById(R.id.release_date);
         TextView rating = (TextView)findViewById(R.id.rating);
         ImageView poster = (ImageView)findViewById(R.id.poster);
         TextView overview = (TextView)findViewById(R.id.overview);
@@ -30,6 +31,7 @@ public class MovieDetailActivity extends ActionBarActivity {
         double ratingDouble = intent.getDoubleExtra("vote_average", 0);
         rating.setText(ratingDouble + "/10");
         overview.setText(intent.getStringExtra("overview"));
+        releaseDate.setText(intent.getStringExtra("release_date"));
         Picasso.with(getApplicationContext()).load(
                 "http://image.tmdb.org/t/p/w342//" + intent.getStringExtra("poster_path"))
                 .placeholder(R.drawable.movie_loading)
