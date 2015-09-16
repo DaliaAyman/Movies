@@ -21,21 +21,30 @@ public class MovieDbHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
-                MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MovieEntry.COLUMN_MOVIE_TITLE + " TEXT UNIQUE NOT NULL," +
-                MovieEntry.COLUMN_MOVIE_POSTER_PATH + " TEXT UNIQUE NOT NULL," +
-                MovieEntry.COLUMN_MOVIE_OVERVIEW + " TEXT UNIQUE NOT NULL," +
-                MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE + " REAL NOT NULL," +
-                MovieEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT UNIQUE NOT NULL " + " );";
+        final String SQL_CREATE_MOVIE_TABLE_MOST_POPULAR = "CREATE TABLE " + MovieEntryByMostPopular.TABLE_NAME + " (" +
+                MovieEntryByMostPopular._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                MovieEntryByMostPopular.COLUMN_MOVIE_TITLE + " TEXT UNIQUE NOT NULL," +
+                MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH + " TEXT UNIQUE NOT NULL," +
+                MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW + " TEXT UNIQUE NOT NULL," +
+                MovieEntryByMostPopular.COLUMN_MOVIE_VOTE_AVERAGE + " REAL NOT NULL," +
+                MovieEntryByMostPopular.COLUMN_MOVIE_RELEASE_DATE + " TEXT UNIQUE NOT NULL " + " );";
 
+        final String SQL_CREATE_MOVIE_TABLE_HIGHEST_RATED = "CREATE TABLE " + MovieEntryByHighestRated.TABLE_NAME + " (" +
+                MovieEntryByHighestRated._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                MovieEntryByHighestRated.COLUMN_MOVIE_TITLE + " TEXT UNIQUE NOT NULL," +
+                MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH + " TEXT UNIQUE NOT NULL," +
+                MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW + " TEXT UNIQUE NOT NULL," +
+                MovieEntryByHighestRated.COLUMN_MOVIE_VOTE_AVERAGE + " REAL NOT NULL," +
+                MovieEntryByHighestRated.COLUMN_MOVIE_RELEASE_DATE + " TEXT UNIQUE NOT NULL " + " );";
 
-        db.execSQL(SQL_CREATE_MOVIE_TABLE);
+        db.execSQL(SQL_CREATE_MOVIE_TABLE_MOST_POPULAR);
+        db.execSQL(SQL_CREATE_MOVIE_TABLE_HIGHEST_RATED);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MovieEntryByMostPopular.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MovieEntryByHighestRated.TABLE_NAME);
         onCreate(db);
     }
 }
