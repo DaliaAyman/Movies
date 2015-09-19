@@ -147,4 +147,38 @@ public class MovieProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+
+        switch (match){
+            case MOVIE_BY_MOST_POPULAR: {
+                bulkInsertHelper(MovieContract.MovieEntryByMostPopular.TABLE_NAME, db, values, uri);
+            }
+            case MOVIE_BY_HIGHEST_RATED: {
+                bulkInsertHelper(MovieContract.MovieEntryByHighestRated.TABLE_NAME, db, values, uri);
+            }
+            default:
+                return super.bulkInsert(uri, values);
+        }
+    }
+    private int bulkInsertHelper(String tableName, SQLiteDatabase db, ContentValues[] values, Uri uri){
+        db.beginTransaction();
+        int returnCount = 0;
+        try{
+            for(ContentValues value: values){
+                long _id = db.insert(tableName, null, value);
+                if(_id != -1){
+                    returnCount++;
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnCount;
+    }
 }
