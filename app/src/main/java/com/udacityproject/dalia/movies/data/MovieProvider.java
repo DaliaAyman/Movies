@@ -7,8 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import java.sql.SQLException;
-
 /**
  * Created by Dalia on 9/15/2015.
  */
@@ -22,6 +20,20 @@ public class MovieProvider extends ContentProvider {
     static final int MOVIE_BY_HIGHEST_RATED = 200;
     static final int MOVIE_BY_HIGHEST_RATED_WITH_ID = 201;
 
+    //movie_most_popular._ID = ?
+    private String getMovieMostPopularIDSelection(int id){
+        String sMovieMostPopularIDSelection =
+                MovieContract.MovieEntryByMostPopular.TABLE_NAME + "."
+                + MovieContract.MovieEntryByMostPopular._ID + " = " + id;
+        return sMovieMostPopularIDSelection;
+    }
+    //movie_highest_rated._ID = ?
+    private String getMovieHighestRatedIDSelection(int id){
+        String sMovieHighestRatedIDSelection =
+                MovieContract.MovieEntryByHighestRated.TABLE_NAME + "."
+                        + MovieContract.MovieEntryByHighestRated._ID + " = " + id;
+        return sMovieHighestRatedIDSelection;
+    }
     @Override
     public boolean onCreate() {
         mOpenHelper = new MovieDbHelper(getContext());
@@ -57,11 +69,41 @@ public class MovieProvider extends ContentProvider {
         }
     }
 
-
-    // TODO
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        Cursor retCursor;
+        switch (sUriMatcher.match(uri)){
+            case MOVIE_BY_MOST_POPULAR: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntryByMostPopular.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+                break;
+            }
+            case MOVIE_BY_MOST_POPULAR_WITH_ID: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntryByMostPopular.TABLE_NAME, projection,
+                        getMovieMostPopularIDSelection(MovieContract.MovieEntryByMostPopular.getMovieIDFromUri(uri)),
+                        selectionArgs, null, null, sortOrder);
+                break;
+            }
+            case MOVIE_BY_HIGHEST_RATED: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntryByHighestRated.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+                break;
+            }
+            case MOVIE_BY_HIGHEST_RATED_WITH_ID: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntryByHighestRated.TABLE_NAME, projection,
+                        getMovieHighestRatedIDSelection(MovieContract.MovieEntryByHighestRated.getMovieIDFromUri(uri)),
+                        selectionArgs, null, null, sortOrder);
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
     }
 
     @Override
