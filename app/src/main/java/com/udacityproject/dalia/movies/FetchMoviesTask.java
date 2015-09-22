@@ -1,11 +1,13 @@
 package com.udacityproject.dalia.movies;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.GridView;
 
+import com.udacityproject.dalia.movies.data.MovieContract;
 import com.udacityproject.dalia.movies.model.Movie;
 import com.udacityproject.dalia.movies.model.MoviesGridViewAdapter;
 
@@ -116,6 +118,34 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
         return null;
     }
 
+    void addMovie(ContentValues movieValues, String movieTableName, String title, String overview, String posterPath, double voteAverage, String releaseDate){
+
+        switch (movieTableName){
+            case MovieContract.MovieEntryByMostPopular.TABLE_NAME: {
+                movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_TITLE, title);
+                movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW, overview);
+                movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH, posterPath);
+                movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
+                movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
+
+                Uri insertedUri = mContext.getContentResolver().insert(MovieContract.MovieEntryByMostPopular.CONTENT_URI, movieValues);
+
+            }
+            case MovieContract.MovieEntryByHighestRated.TABLE_NAME: {
+                movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_TITLE, title);
+                movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW, overview);
+                movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH, posterPath);
+                movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
+                movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
+
+                Uri insertedUri = mContext.getContentResolver().insert(MovieContract.MovieEntryByHighestRated.CONTENT_URI, movieValues);
+
+            }
+            default:
+                throw new UnsupportedOperationException("Wrong Table Name " + movieTableName);
+        }
+    }
+
     public Movie[] getMoviesDataFromJSON(String moviesStr) throws JSONException{
 
         JSONObject moviesObject = new JSONObject(moviesStr);
@@ -135,6 +165,21 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             Movie m = new Movie(title, overview, posterPath, voteAverage, releaseDate);
             //Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
             resultObjs[i] = m;
+
+            String sortType = Utility.getSortTypeFromPreferences(mContext);
+            ContentValues movieValues = new ContentValues();
+
+            switch (sortType){
+                case "popularity": {
+
+                }
+                case "vote_average": {
+
+                }
+                default:
+                    throw new UnsupportedOperationException("Unknown sort type: " + sortType);
+            }
+
         }
 
         return resultObjs;

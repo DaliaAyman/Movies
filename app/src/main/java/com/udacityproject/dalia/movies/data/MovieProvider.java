@@ -1,5 +1,6 @@
 package com.udacityproject.dalia.movies.data;
 
+import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -180,5 +181,12 @@ public class MovieProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return returnCount;
+    }
+
+    @Override
+    @TargetApi(11)
+    public void shutdown() {
+        mOpenHelper.close();
+        super.shutdown();
     }
 }

@@ -1,9 +1,7 @@
 package com.udacityproject.dalia.movies;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,11 +35,8 @@ public class MoviesHolderFragment extends Fragment {
     }
 
     public void updateMovies(){
-        SharedPreferences sharedPrefs =
-                PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortType = sharedPrefs.getString(
-                getString(R.string.pref_sort_by_key),
-                getString(R.string.pref_sort_key_most_popular_label));
+        String sortType = Utility.getSortTypeFromPreferences(getActivity());
+
         if(task != null){
             task.cancel(true);
         }
