@@ -34,6 +34,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.udacityproject.dalia.movies.HomeActivity" />
         </activity>
+        <provider
+            android:authorities="com.udacityproject.dalia.movies"
+            android:name=".data.MovieProvider"/>
     </application>
 
 </manifest>

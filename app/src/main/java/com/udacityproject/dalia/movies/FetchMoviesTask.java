@@ -1,5 +1,6 @@
 package com.udacityproject.dalia.movies;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by Dalia on 9/2/2015.
@@ -118,8 +120,9 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
         return null;
     }
 
-    void addMovie(ContentValues movieValues, String movieTableName, String title, String overview, String posterPath, double voteAverage, String releaseDate){
-
+    long addMovie(String movieTableName, String title, String overview, String posterPath, double voteAverage, String releaseDate){
+        ContentValues movieValues = new ContentValues();
+        long movieId;
         switch (movieTableName){
             case MovieContract.MovieEntryByMostPopular.TABLE_NAME: {
                 movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_TITLE, title);
@@ -129,7 +132,8 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
                 movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
 
                 Uri insertedUri = mContext.getContentResolver().insert(MovieContract.MovieEntryByMostPopular.CONTENT_URI, movieValues);
-
+                movieId = ContentUris.parseId(insertedUri);
+                break;
             }
             case MovieContract.MovieEntryByHighestRated.TABLE_NAME: {
                 movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_TITLE, title);
@@ -139,11 +143,13 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
                 movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
 
                 Uri insertedUri = mContext.getContentResolver().insert(MovieContract.MovieEntryByHighestRated.CONTENT_URI, movieValues);
-
+                movieId = ContentUris.parseId(insertedUri);
+                break;
             }
             default:
                 throw new UnsupportedOperationException("Wrong Table Name " + movieTableName);
         }
+        return movieId;
     }
 
     public Movie[] getMoviesDataFromJSON(String moviesStr) throws JSONException{
@@ -152,6 +158,10 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
         JSONArray resultsArray = moviesObject.getJSONArray("results");
 
         Movie[] resultObjs = new Movie[resultsArray.length()];
+
+        long movieId = 0;
+        Vector<ContentValues> cVVector = new Vector<ContentValues>(resultsArray.length());
+        String sortType = "";
 
         for(int i=0; i<resultsArray.length(); i++){
             JSONObject movieObj = resultsArray.getJSONObject(i);
@@ -163,23 +173,56 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             String releaseDate = movieObj.getString("release_date");
 
             Movie m = new Movie(title, overview, posterPath, voteAverage, releaseDate);
-            //Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
+            Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
             resultObjs[i] = m;
 
-            String sortType = Utility.getSortTypeFromPreferences(mContext);
+            sortType = Utility.getSortTypeFromPreferences(mContext);
             ContentValues movieValues = new ContentValues();
 
             switch (sortType){
                 case "popularity": {
+                    //movieId = addMovie(MovieContract.MovieEntryByMostPopular.TABLE_NAME, title, overview, posterPath, voteAverage, releaseDate);
 
+                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_KEY, movieId);
+                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_TITLE, title);
+                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW, overview);
+                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH, posterPath);
+                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
+                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
+                    break;
                 }
                 case "vote_average": {
+                    //movieId = addMovie(MovieContract.MovieEntryByHighestRated.TABLE_NAME, title, overview, posterPath, voteAverage, releaseDate);
 
-                }
-                default:
+                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_KEY, movieId);
+                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_TITLE, title);
+                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW, overview);
+                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH, posterPath);
+                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
+                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
+                    break;
+                }default:
+                    throw new UnsupportedOperationException("Unknown sort type: " + sortType);
+            }
+            cVVector.add(movieValues);
+            Log.d("grid", "added to vector");
+        }
+        int inserted = 0;
+        if(cVVector.size() > 0){
+            ContentValues[] cVArray = new ContentValues[cVVector.size()];
+            cVVector.toArray(cVArray);
+            switch (sortType){
+                case "popularity":{
+                    inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntryByMostPopular.CONTENT_URI, cVArray);
+                    break;
+                }case "vote_average": {
+                    inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntryByHighestRated.CONTENT_URI, cVArray);
+                    break;
+                }default:
                     throw new UnsupportedOperationException("Unknown sort type: " + sortType);
             }
 
+            Log.d("grid", "FetchMoviesTask complete " + inserted + " inserted");
         }
 
         return resultObjs;

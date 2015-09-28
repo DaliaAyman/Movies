@@ -13,7 +13,7 @@ public class Utility {
                 PreferenceManager.getDefaultSharedPreferences(context);
         String sortType = sharedPrefs.getString(
                 context.getString(R.string.pref_sort_by_key),
-                context.getString(R.string.pref_sort_key_most_popular_label));
+                context.getString(R.string.pref_sort_key_most_popular));
 
         return sortType;
     }

@@ -3,8 +3,10 @@ package com.udacityproject.dalia.movies.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import static com.udacityproject.dalia.movies.data.MovieContract.*;
+import static com.udacityproject.dalia.movies.data.MovieContract.MovieEntryByHighestRated;
+import static com.udacityproject.dalia.movies.data.MovieContract.MovieEntryByMostPopular;
 
 /**
  * Created by Dalia on 9/15/2015.
@@ -21,6 +23,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("grid", "onCreate db helper");
         final String SQL_CREATE_MOVIE_TABLE_MOST_POPULAR = "CREATE TABLE " + MovieEntryByMostPopular.TABLE_NAME + " (" +
                 MovieEntryByMostPopular._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 MovieEntryByMostPopular.COLUMN_MOVIE_TITLE + " TEXT UNIQUE NOT NULL," +

@@ -156,10 +156,10 @@ public class MovieProvider extends ContentProvider {
 
         switch (match){
             case MOVIE_BY_MOST_POPULAR: {
-                bulkInsertHelper(MovieContract.MovieEntryByMostPopular.TABLE_NAME, db, values, uri);
+                return bulkInsertHelper(MovieContract.MovieEntryByMostPopular.TABLE_NAME, db, values, uri);
             }
             case MOVIE_BY_HIGHEST_RATED: {
-                bulkInsertHelper(MovieContract.MovieEntryByHighestRated.TABLE_NAME, db, values, uri);
+                return bulkInsertHelper(MovieContract.MovieEntryByHighestRated.TABLE_NAME, db, values, uri);
             }
             default:
                 return super.bulkInsert(uri, values);

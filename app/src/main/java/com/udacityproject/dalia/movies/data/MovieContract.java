@@ -29,6 +29,8 @@ public class MovieContract {
         public static final String TABLE_NAME = "movie_most_popular";
 
         //Columns
+        public static final String COLUMN_MOVIE_KEY = "movie_id";
+
         public static final String COLUMN_MOVIE_TITLE = "title";
         public static final String COLUMN_MOVIE_OVERVIEW = "overview";
         public static final String COLUMN_MOVIE_POSTER_PATH = "poster_path";
@@ -58,6 +60,8 @@ public class MovieContract {
         public static final String TABLE_NAME = "movie_highest_rated";
 
         //Columns
+        public static final String COLUMN_MOVIE_KEY = "movie_id";
+
         public static final String COLUMN_MOVIE_TITLE = "title";
         public static final String COLUMN_MOVIE_OVERVIEW = "overview";
         public static final String COLUMN_MOVIE_POSTER_PATH = "poster_path";
