@@ -1,14 +1,10 @@
 package com.udacityproject.dalia.movies;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 
 public class MovieDetailActivity extends ActionBarActivity {
@@ -18,27 +14,17 @@ public class MovieDetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        Intent intent = getIntent();
-        Bundle bundle = getIntent().getExtras();
+        if (savedInstanceState == null){
+            Bundle arguments = new Bundle();
+            //arguments.putParcelable("title", );
 
-        TextView title = (TextView)findViewById(R.id.movie_title);
-        TextView releaseDate = (TextView)findViewById(R.id.release_date);
-        TextView rating = (TextView)findViewById(R.id.rating);
-        ImageView poster = (ImageView)findViewById(R.id.poster);
-        TextView overview = (TextView)findViewById(R.id.overview);
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            fragment.setArguments(arguments);
 
-        title.setText(intent.getStringExtra("title"));
-        double ratingDouble = intent.getDoubleExtra("vote_average", 0);
-        rating.setText(ratingDouble + "/10");
-        overview.setText(intent.getStringExtra("overview"));
-        releaseDate.setText(intent.getStringExtra("release_date"));
-        Picasso.with(getApplicationContext()).load(
-                "http://image.tmdb.org/t/p/w342//" + intent.getStringExtra("poster_path"))
-                .placeholder(R.drawable.movie_loading)
-                .resize(500,900)
-                .centerInside()
-                .into(poster);
-
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container, fragment)
+                    .commit();
+        }
     }
 
 
@@ -58,6 +44,7 @@ public class MovieDetailActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 

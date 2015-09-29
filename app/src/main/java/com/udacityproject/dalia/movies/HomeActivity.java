@@ -3,20 +3,30 @@ package com.udacityproject.dalia.movies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class HomeActivity extends ActionBarActivity {
+public class HomeActivity extends ActionBarActivity implements MoviesHolderFragment.Callback{
+
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MoviesHolderFragment())
-                    .commit();
+        if(findViewById(R.id.movie_detail_container) != null){
+            mTwoPane = true;
+            if (savedInstanceState != null){
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new MovieDetailFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
+            }
+        } else{
+            mTwoPane = false;
         }
     }
 
@@ -43,5 +53,23 @@ public class HomeActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(int movieIndex) {
+        Log.d("grid", "tablet: mPane = " + mTwoPane);
+        if(mTwoPane){
+            MovieDetailFragment detailFragment = new MovieDetailFragment();
+            Bundle args = new Bundle();
+            args.putInt(MovieDetailFragment.POSITION, movieIndex);
+            detailFragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, detailFragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        }else{
+            Intent intent = new Intent(getApplicationContext(), MovieDetailActivity.class);
+            startActivity(intent);
+        }
     }
 }

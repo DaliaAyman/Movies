@@ -173,7 +173,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             String releaseDate = movieObj.getString("release_date");
 
             Movie m = new Movie(title, overview, posterPath, voteAverage, releaseDate);
-            Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
+            //Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
             resultObjs[i] = m;
 
             sortType = Utility.getSortTypeFromPreferences(mContext);
@@ -205,7 +205,6 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
                     throw new UnsupportedOperationException("Unknown sort type: " + sortType);
             }
             cVVector.add(movieValues);
-            Log.d("grid", "added to vector");
         }
         int inserted = 0;
         if(cVVector.size() > 0){
