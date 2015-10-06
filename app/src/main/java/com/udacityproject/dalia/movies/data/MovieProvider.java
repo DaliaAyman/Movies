@@ -81,10 +81,12 @@ public class MovieProvider extends ContentProvider {
                 break;
             }
             case MOVIE_BY_MOST_POPULAR_WITH_ID: {
+                long _id = MovieContract.MovieEntryByMostPopular.getMovieIDFromUri(uri);
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.MovieEntryByMostPopular.TABLE_NAME, projection,
-                        getMovieMostPopularIDSelection(MovieContract.MovieEntryByMostPopular.getMovieIDFromUri(uri)),
-                        selectionArgs, null, null, sortOrder);
+                        MovieContract.MovieEntryByMostPopular._ID + " = ?",
+                        new String[]{Long.toString(_id)},
+                        null, null, sortOrder);
                 break;
             }
             case MOVIE_BY_HIGHEST_RATED: {
@@ -94,10 +96,11 @@ public class MovieProvider extends ContentProvider {
                 break;
             }
             case MOVIE_BY_HIGHEST_RATED_WITH_ID: {
+                long _id = MovieContract.MovieEntryByHighestRated.getMovieIDFromUri(uri);
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.MovieEntryByHighestRated.TABLE_NAME, projection,
-                        getMovieHighestRatedIDSelection(MovieContract.MovieEntryByHighestRated.getMovieIDFromUri(uri)),
-                        selectionArgs, null, null, sortOrder);
+                        MovieContract.MovieEntryByHighestRated._ID + " = ?",
+                        new String[]{Long.toString(_id)}, null, null, sortOrder);
                 break;
             }
             default:
@@ -137,16 +140,53 @@ public class MovieProvider extends ContentProvider {
         return returnUri;
     }
 
-    // TODO
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        int rowsDeleted;
+
+        //delete all rows and return the number of records deleted
+        if (selection == null) {
+            selection = "1";
+        }
+
+        switch (match){
+            case MOVIE_BY_MOST_POPULAR:
+                rowsDeleted = db.delete(MovieContract.MovieEntryByMostPopular.TABLE_NAME, selection, selectionArgs);
+                break;
+            case MOVIE_BY_HIGHEST_RATED:
+                rowsDeleted = db.delete(MovieContract.MovieEntryByHighestRated.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if(rowsDeleted != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
-    // TODO
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        int rowsUpdated;
+
+        switch (match){
+            case MOVIE_BY_MOST_POPULAR:
+                rowsUpdated = db.update(MovieContract.MovieEntryByMostPopular.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case MOVIE_BY_HIGHEST_RATED:
+                rowsUpdated = db.update(MovieContract.MovieEntryByHighestRated.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if(rowsUpdated != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 
     @Override

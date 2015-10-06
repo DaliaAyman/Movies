@@ -13,6 +13,8 @@ public class MovieContract {
     public static final String CONTENT_AUTHORITY = "com.udacityproject.dalia.movies";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
+    //path to the tables
+    // content://com.udacityproject.dalia.movies.movie_most_popular
     public static final String PATH_MOVIE_MOST_POPULAR = "movie_most_popular";
     public static final String PATH_MOVIE_HIGHEST_RATED = "movie_highest_rated";
 
@@ -41,8 +43,8 @@ public class MovieContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static int getMovieIDFromUri(Uri uri){
-            return Integer.parseInt(uri.getPathSegments().get(1));
+        public static long getMovieIDFromUri(Uri uri){
+            return ContentUris.parseId(uri);
         }
     }
 
