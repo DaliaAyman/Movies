@@ -1,30 +1,56 @@
 package com.udacityproject.dalia.movies.model;
 
-import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.udacityproject.dalia.movies.R;
-
-import java.util.ArrayList;
+import com.udacityproject.dalia.movies.data.MovieContract;
 
 /**
  * Created by Dalia on 8/25/2015.
  */
-public class MoviesGridViewAdapter extends ArrayAdapter {
-    private Context context;
-    private int layoutResourceId;
-    private ArrayList<Movie> movieArrayList = new ArrayList<Movie>();
-
+public class MoviesGridViewAdapter extends CursorAdapter {
     int width;
     int height;
 
-    public MoviesGridViewAdapter(Context context, int resource, ArrayList<Movie> arrayList) {
+    public MoviesGridViewAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
+
+        width = context.getResources().getDisplayMetrics().widthPixels;
+        height = context.getResources().getDisplayMetrics().heightPixels;
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        ImageView imageView = (ImageView)view.findViewById(R.id.movie_image);
+
+        //TODO get table name from preferences
+
+        int moviePosterColumn = cursor.getColumnIndex(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH);
+        String moviePoster = cursor.getString(moviePosterColumn);
+
+        //Log.d("grid", "moviePoster = " + moviePoster);
+
+        Picasso.with(context).load("http://image.tmdb.org/t/p/w185//" + moviePoster)
+                .placeholder(R.drawable.movie_loading)
+                .resize(width/2, height/2)
+                .centerCrop()
+
+                .into(imageView);
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        return LayoutInflater.from(context).inflate(R.layout.movie_grid_item, parent, false);
+    }
+
+    /*public MoviesGridViewAdapter(Context context, int resource, ArrayList<Movie> arrayList) {
         super(context, resource, arrayList);
 
         this.layoutResourceId = resource;
@@ -32,28 +58,5 @@ public class MoviesGridViewAdapter extends ArrayAdapter {
         movieArrayList = arrayList;
         width = context.getResources().getDisplayMetrics().widthPixels;
         height = context.getResources().getDisplayMetrics().heightPixels;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        //if(convertView == null){
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            convertView = inflater.inflate(layoutResourceId, null);
-
-            ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_image);
-            Picasso.with(context).load("http://image.tmdb.org/t/p/w185//" + movieArrayList.get(position).getPosterPath())
-                    .placeholder(R.drawable.movie_loading)
-                    .resize(width/2, height/2)
-                    .centerCrop()
-
-                    .into(imageView);
-
-//        }else{
-//
-//        }
-
-
-        return convertView;
-    }
+    }*/
 }

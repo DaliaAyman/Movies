@@ -22,13 +22,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**
  * Created by Dalia on 9/2/2015.
  */
-public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
+public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
     MoviesGridViewAdapter mAdapter;
     GridView mGridView;
     Context mContext;
@@ -50,7 +49,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
     }
 
     @Override
-    protected Movie[] doInBackground(String... options) {
+    protected Void doInBackground(String... options) {
         HttpURLConnection httpURLConnection = null;
         BufferedReader bufferedReader = null;
 
@@ -110,7 +109,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
         //get data from JSON
         try{
-            return getMoviesDataFromJSON(moviesJSONStr);
+            getMoviesDataFromJSON(moviesJSONStr);
         }catch (JSONException e){
             Log.e("grid", e.getMessage(), e);
             e.printStackTrace();
@@ -120,22 +119,23 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
         return null;
     }
 
-    long addMovie(String movieTableName, String title, String overview, String posterPath, double voteAverage, String releaseDate){
+    long addMovie(String movieTableName, String key, String title, String overview, String posterPath, double voteAverage, String releaseDate){
         ContentValues movieValues = new ContentValues();
-        long movieId;
+        long movieId=0;
         switch (movieTableName){
             case MovieContract.MovieEntryByMostPopular.TABLE_NAME: {
                 movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_TITLE, title);
+                movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_KEY, key);
                 movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW, overview);
                 movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH, posterPath);
                 movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
                 movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
-
-                Uri insertedUri = mContext.getContentResolver().insert(MovieContract.MovieEntryByMostPopular.CONTENT_URI, movieValues);
-                movieId = ContentUris.parseId(insertedUri);
+                //Uri insertedUri = mContext.getContentResolver().insert(MovieContract.MovieEntryByMostPopular.CONTENT_URI, movieValues);
+                //movieId = ContentUris.parseId(insertedUri);
                 break;
             }
             case MovieContract.MovieEntryByHighestRated.TABLE_NAME: {
+                movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_KEY, key);
                 movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_TITLE, title);
                 movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW, overview);
                 movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH, posterPath);
@@ -152,52 +152,44 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
         return movieId;
     }
 
-    public Movie[] getMoviesDataFromJSON(String moviesStr) throws JSONException{
+    public void getMoviesDataFromJSON(String moviesStr) throws JSONException{
 
         JSONObject moviesObject = new JSONObject(moviesStr);
         JSONArray resultsArray = moviesObject.getJSONArray("results");
 
-        Movie[] resultObjs = new Movie[resultsArray.length()];
-
-        long movieId = 0;
+        //long movieId = 0;
         Vector<ContentValues> cVVector = new Vector<ContentValues>(resultsArray.length());
         String sortType = "";
-
         for(int i=0; i<resultsArray.length(); i++){
             JSONObject movieObj = resultsArray.getJSONObject(i);
 
+            String key = movieObj.getString("id");
             String title = movieObj.getString("title");
             String overview = movieObj.getString("overview");
             String posterPath = movieObj.getString("poster_path");
             double voteAverage = movieObj.getDouble("vote_average");
             String releaseDate = movieObj.getString("release_date");
 
-            Movie m = new Movie(title, overview, posterPath, voteAverage, releaseDate);
+            Movie m = new Movie(key, title, overview, posterPath, voteAverage, releaseDate);
             //Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
-            resultObjs[i] = m;
 
             sortType = Utility.getSortTypeFromPreferences(mContext);
             ContentValues movieValues = new ContentValues();
-
             switch (sortType){
                 case "popularity": {
-                    //movieId = addMovie(MovieContract.MovieEntryByMostPopular.TABLE_NAME, title, overview, posterPath, voteAverage, releaseDate);
-
-                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_KEY, movieId);
+                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_KEY, key);
                     movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_TITLE, title);
-                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW, overview);
                     movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH, posterPath);
+                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW, overview);
                     movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
                     movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
                     break;
                 }
                 case "vote_average": {
-                    //movieId = addMovie(MovieContract.MovieEntryByHighestRated.TABLE_NAME, title, overview, posterPath, voteAverage, releaseDate);
-
-                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_KEY, movieId);
+                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_KEY, key);
                     movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_TITLE, title);
-                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW, overview);
                     movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH, posterPath);
+                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW, overview);
                     movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
                     movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
                     break;
@@ -223,11 +215,9 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
             Log.d("grid", "FetchMoviesTask complete " + inserted + " inserted");
         }
-
-        return resultObjs;
     }
 
-    @Override
+    /*@Override
     protected void onPreExecute() {
         super.onPreExecute();
     }
@@ -241,7 +231,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
             for (Movie m1: movies){
                 arrayList.add(m1);
             }
-            mAdapter = new MoviesGridViewAdapter(mContext, R.layout.movie_grid_item, arrayList);
+            mAdapter = new MoviesGridViewAdapter(mContext, null, 0);
             mGridView.setAdapter(mAdapter);
 
         }
@@ -250,5 +240,5 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
     @Override
     protected void onProgressUpdate(Void... values) {
         super.onProgressUpdate(values);
-    }
+    }*/
 }

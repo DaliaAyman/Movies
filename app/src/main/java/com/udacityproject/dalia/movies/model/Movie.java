@@ -5,19 +5,30 @@ package com.udacityproject.dalia.movies.model;
  */
 public class Movie {
 
+    private String key;
     private String title;
     private String overview;
     private String posterPath;
     private double voteAverage;
     private String releaseDate;
 
-    public Movie(String title, String overview, String posterPath, double voteAverage, String releaseDate){
+    public Movie(String key, String title, String overview, String posterPath, double voteAverage, String releaseDate){
+        this.key = key;
         this.title = title;
         this.overview = overview;
         this.posterPath = posterPath;
         this.voteAverage = voteAverage;
         this.releaseDate = releaseDate;
     }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getTitle() {
         return title;
     }
