@@ -16,7 +16,7 @@ public class MovieDetailActivity extends ActionBarActivity {
 
         if (savedInstanceState == null){
             Bundle arguments = new Bundle();
-            //arguments.putParcelable("title", );
+            arguments.putParcelable(MovieDetailFragment.DETAIL_URI, getIntent().getData());
 
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);

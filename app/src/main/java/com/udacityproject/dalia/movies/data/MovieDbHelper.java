@@ -24,7 +24,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         final String SQL_CREATE_MOVIE_TABLE_MOST_POPULAR = "CREATE TABLE " + MovieEntryByMostPopular.TABLE_NAME + " (" +
                 MovieEntryByMostPopular._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MovieEntryByMostPopular.COLUMN_MOVIE_KEY + " UNIQUE INTEGER NOT NULL," +
+                MovieEntryByMostPopular.COLUMN_MOVIE_KEY + " INTEGER UNIQUE NOT NULL," +
                 MovieEntryByMostPopular.COLUMN_MOVIE_TITLE + " TEXT NOT NULL," +
                 MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH + " TEXT NOT NULL," +
                 MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW + " TEXT NOT NULL," +
@@ -33,7 +33,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
 
         final String SQL_CREATE_MOVIE_TABLE_HIGHEST_RATED = "CREATE TABLE " + MovieEntryByHighestRated.TABLE_NAME + " (" +
                 MovieEntryByHighestRated._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MovieEntryByHighestRated.COLUMN_MOVIE_KEY + " UNIQUE INTEGER NOT NULL," +
+                MovieEntryByHighestRated.COLUMN_MOVIE_KEY + " INTEGER UNIQUE NOT NULL," +
                 MovieEntryByHighestRated.COLUMN_MOVIE_TITLE + " TEXT NOT NULL," +
                 MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH + " TEXT NOT NULL," +
                 MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW + " TEXT NOT NULL," +

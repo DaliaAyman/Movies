@@ -76,7 +76,6 @@ public class MoviesHolderFragment extends Fragment implements LoaderManager.Load
 
                 Cursor currentData = (Cursor) parent.getItemAtPosition(position);
                 if (currentData != null) {
-                    Log.d("grid", "currentData not null");
                     Intent detailsIntent = new Intent(getActivity(), MovieDetailActivity.class);
                     final int MOVIE_ID_COL = currentData.getColumnIndex(MovieContract.MovieEntryByMostPopular._ID);
                     Uri movieUri = MovieContract.MovieEntryByMostPopular.buildMovieUri(currentData.getInt(MOVIE_ID_COL));
