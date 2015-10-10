@@ -48,6 +48,7 @@ public class MoviesHolderFragment extends Fragment implements LoaderManager.Load
         task = new FetchMoviesTask(getActivity(), gridView);
         task.execute(sortType);
         gridView.setAdapter(adapter);
+        getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
     }
 
     @Override
@@ -65,22 +66,27 @@ public class MoviesHolderFragment extends Fragment implements LoaderManager.Load
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*Movie movie = (Movie)parent.getItemAtPosition(position);
-                Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-                intent.putExtra("title", movie.getTitle());
-                intent.putExtra("overview", movie.getOverview());
-                intent.putExtra("poster_path", movie.getPosterPath());
-                intent.putExtra("vote_average", movie.getVoteAverage());
-                intent.putExtra("release_date", movie.getReleaseDate());
-                startActivity(intent);*/
 
                 Cursor currentData = (Cursor) parent.getItemAtPosition(position);
                 if (currentData != null) {
                     Intent detailsIntent = new Intent(getActivity(), MovieDetailActivity.class);
-                    final int MOVIE_ID_COL = currentData.getColumnIndex(MovieContract.MovieEntryByMostPopular._ID);
-                    Uri movieUri = MovieContract.MovieEntryByMostPopular.buildMovieUri(currentData.getInt(MOVIE_ID_COL));
-
-                    detailsIntent.setData(movieUri);
+                    String sortType = Utility.getSortTypeFromPreferences(getActivity());
+                    int MOVIE_ID_COL=0;
+                    Uri movieUri;
+                    switch (sortType){
+                        case MovieContract.POPULARITY: {
+                            MOVIE_ID_COL = currentData.getColumnIndex(MovieContract.MovieEntryByMostPopular._ID);
+                            movieUri = MovieContract.MovieEntryByMostPopular.buildMovieUri(currentData.getInt(MOVIE_ID_COL));
+                            detailsIntent.setData(movieUri);
+                            break;
+                        }
+                        case MovieContract.VOTE_AVERAGE: {
+                            MOVIE_ID_COL = currentData.getColumnIndex(MovieContract.MovieEntryByHighestRated._ID);
+                            movieUri = MovieContract.MovieEntryByHighestRated.buildMovieUri(currentData.getInt(MOVIE_ID_COL));
+                            detailsIntent.setData(movieUri);
+                            break;
+                        }
+                    }
                     startActivity(detailsIntent);
                 }
             }

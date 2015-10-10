@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.udacityproject.dalia.movies.R;
+import com.udacityproject.dalia.movies.Utility;
 import com.udacityproject.dalia.movies.data.MovieContract;
 
 /**
@@ -30,9 +31,20 @@ public class MoviesGridViewAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ImageView imageView = (ImageView)view.findViewById(R.id.movie_image);
 
-        //TODO get table name from preferences
+        String sortOrder = Utility.getSortTypeFromPreferences(context);
+        int moviePosterColumn=3;
+        switch (sortOrder){
+            case MovieContract.POPULARITY:
+                moviePosterColumn = cursor.getColumnIndex(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH);
+                break;
+            case MovieContract.VOTE_AVERAGE:
+                moviePosterColumn = cursor.getColumnIndex(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH);
+                break;
+            case MovieContract.FAVORITES:
+                //TODO
+                break;
+        }
 
-        int moviePosterColumn = cursor.getColumnIndex(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH);
         String moviePoster = cursor.getString(moviePosterColumn);
 
         //Log.d("grid", "moviePoster = " + moviePoster);

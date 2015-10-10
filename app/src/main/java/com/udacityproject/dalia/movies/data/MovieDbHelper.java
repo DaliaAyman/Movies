@@ -12,7 +12,7 @@ import static com.udacityproject.dalia.movies.data.MovieContract.MovieEntryByMos
  */
 public class MovieDbHelper extends SQLiteOpenHelper{
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 8;
 
     static final String DATABASE_NAME = "movies.db";
 
@@ -52,7 +52,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
                 MovieEntryByMostPopular.TABLE_NAME + "(" + MovieEntryByMostPopular.COLUMN_MOVIE_KEY + "),"  +
                 " FOREIGN KEY (" + MovieContract.ReviewEntry.COLUMN_MOVIE_KEY + ") REFERENCES " +
                 MovieEntryByHighestRated.TABLE_NAME + "(" + MovieEntryByHighestRated.COLUMN_MOVIE_KEY + ")," +
-                " UNIQUE (" + MovieContract.ReviewEntry.COLUMN_MOVIE_KEY + " ) ON CONFLICT REPLACE);";
+                " UNIQUE (" + MovieContract.ReviewEntry.COLUMN_REVIEW_ID + " ) ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_TRAILER_TABLE = "CREATE TABLE " + MovieContract.TrailerEntry.TABLE_NAME + " (" +
                 MovieContract.TrailerEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -64,7 +64,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
                 MovieEntryByMostPopular.TABLE_NAME + "(" + MovieEntryByMostPopular.COLUMN_MOVIE_KEY + ")," +
                 " FOREIGN KEY (" + MovieContract.TrailerEntry.COLUMN_MOVIE_KEY + ") REFERENCES " +
                 MovieEntryByHighestRated.TABLE_NAME + "(" + MovieEntryByHighestRated.COLUMN_MOVIE_KEY + ")," +
-                " UNIQUE (" + MovieContract.TrailerEntry.COLUMN_MOVIE_KEY + " ) ON CONFLICT REPLACE);";
+                " UNIQUE (" + MovieContract.TrailerEntry.COLUMN_TRAILER_ID + " ) ON CONFLICT REPLACE);";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE_MOST_POPULAR);
         db.execSQL(SQL_CREATE_MOVIE_TABLE_HIGHEST_RATED);

@@ -20,6 +20,11 @@ public class MovieContract {
     public static final String PATH_REVIEW = "review";
     public static final String PATH_TRAILER = "trailer";
 
+    //sort types
+    public static final String POPULARITY = "popularity";
+    public static final String VOTE_AVERAGE = "vote_average";
+    public static final String FAVORITES = "favorites";
+
     /* Inner class that defines the table contents of the movie most popular table */
     public static class MovieEntryByMostPopular implements BaseColumns{
 

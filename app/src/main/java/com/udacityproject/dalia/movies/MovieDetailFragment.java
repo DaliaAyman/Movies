@@ -86,9 +86,9 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         if(mUri != null){
             String sortOrderSetting = Utility.getSortTypeFromPreferences(getActivity());
             switch (sortOrderSetting){
-                case "popularity":
+                case MovieContract.POPULARITY:
                     return new CursorLoader(getActivity(), mUri, MOVIE_MOST_POPULAR_COLUMNS, null, null, null);
-                case "vote_average":
+                case MovieContract.VOTE_AVERAGE:
                     return new CursorLoader(getActivity(), mUri, MOVIE_HIGHEST_RATED_COLUMNS, null, null, null);
             }
         }
