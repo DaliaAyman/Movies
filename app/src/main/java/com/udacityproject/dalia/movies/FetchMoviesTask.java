@@ -11,7 +11,6 @@ import android.widget.GridView;
 
 import com.udacityproject.dalia.movies.data.MovieContract;
 import com.udacityproject.dalia.movies.model.Movie;
-import com.udacityproject.dalia.movies.model.MoviesGridViewAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +28,6 @@ import java.util.Vector;
  * Created by Dalia on 9/2/2015.
  */
 public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
-    MoviesGridViewAdapter mAdapter;
     GridView mGridView;
     Context mContext;
 
@@ -137,10 +135,10 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
             String key = movieObj.getString("id");
 
             String reviewsJSON = getReviewsOrTrailersJson(key, REVIEWS_PARAM);
-            Log.d("grid", "reviewsJSON: " + reviewsJSON);
+            //Log.d("grid", "reviewsJSON: " + reviewsJSON);
             JSONObject reviewsObject = new JSONObject(reviewsJSON);
             JSONArray reviewsResultsArray = reviewsObject.getJSONArray("results");
-            Log.d("grid", "reviewResultsArray length: " + reviewsResultsArray.length());
+            //Log.d("grid", "reviewResultsArray length: " + reviewsResultsArray.length());
             if(reviewsResultsArray.length() != 0){
 
             }

@@ -10,11 +10,14 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ListView;
 
-import com.squareup.picasso.Picasso;
+import com.commonsware.cwac.merge.MergeAdapter;
+import com.udacityproject.dalia.movies.adapters.MovieDetailsAdapter_Header;
+import com.udacityproject.dalia.movies.adapters.MovieDetailsAdapter_Reviews;
+import com.udacityproject.dalia.movies.adapters.MovieDetailsAdapter_Trailers;
 import com.udacityproject.dalia.movies.data.MovieContract;
+import com.udacityproject.dalia.movies.data.MovieProvider;
 
 /**
  * Created by Dalia on 9/28/2015.
@@ -26,8 +29,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     public final static String POSITION = "position";
 
     private Uri mUri;
-
-    TextView title, releaseDate, rating, overview; ImageView poster;
+    MergeAdapter mergeAdapter;
 
     private static final String[] MOVIE_MOST_POPULAR_COLUMNS = {
             MovieContract.MovieEntryByMostPopular.TABLE_NAME + "." + MovieContract.MovieEntryByMostPopular._ID,
@@ -47,15 +49,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_VOTE_AVERAGE,
             MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_RELEASE_DATE
     };
-    // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
-    // must change.
-    private static final int COL_MOVIE_ID = 0;
-    private static final int COL_MOVIE_KEY = 1;
-    private static final int COL_MOVIE_TITLE = 2;
-    private static final int COL_MOVIE_POSTER_PATH = 3;
-    private static final int COL_MOVIE_OVERVIEW = 4;
-    private static final int COL_MOVIE_VOTE_AVERAGE = 5;
-    private static final int COL_MOVIE_RELEASE_DATE = 6;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,12 +60,58 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         }
 
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-        title = (TextView)rootView.findViewById(R.id.movie_title);
-        releaseDate = (TextView)rootView.findViewById(R.id.release_date);
-        rating = (TextView)rootView.findViewById(R.id.rating);
-        poster = (ImageView)rootView.findViewById(R.id.poster);
-        overview = (TextView)rootView.findViewById(R.id.overview);
 
+
+        mergeAdapter = new MergeAdapter();
+        String movieId = MovieProvider.getMovieIdFromUri(getActivity(), mUri);
+
+        //get MovieHeader cursor
+        Cursor cursor;
+        String sortType = Utility.getSortTypeFromPreferences(getActivity());
+        switch (sortType){
+            case MovieContract.POPULARITY:{
+                cursor = getActivity().getContentResolver().query(MovieContract.MovieEntryByMostPopular.CONTENT_URI,
+                        null,
+                        MovieContract.MovieEntryByMostPopular._ID + " = ?",
+                        new String[]{String.valueOf(MovieContract.MovieEntryByMostPopular.getMovieIDFromUri(mUri))}, null);
+                break;
+            }
+            case MovieContract.VOTE_AVERAGE:{
+                cursor = getActivity().getContentResolver().query(MovieContract.MovieEntryByHighestRated.CONTENT_URI,
+                        null,
+                        MovieContract.MovieEntryByHighestRated._ID + " = ?",
+                        new String[]{String.valueOf(MovieContract.MovieEntryByHighestRated.getMovieIDFromUri(mUri))}, null);
+                break;
+            }
+            case MovieContract.FAVORITES:{
+                //TODO
+                //cursor = getActivity().getContentResolver().query()
+            }
+            default:
+                cursor = null;
+        }
+
+        ListView listView =(ListView)rootView.findViewById(R.id.list_view_fragment_detail);
+
+
+        Cursor trailerCursor = getActivity().getContentResolver().query(
+                MovieContract.TrailerEntry.CONTENT_URI,
+                new String[]{MovieContract.TrailerEntry._ID, MovieContract.TrailerEntry.COLUMN_MOVIE_KEY, MovieContract.TrailerEntry.COLUMN_TRAILER_NAME},
+                MovieContract.TrailerEntry._ID + " = ?",
+                new String[]{movieId},null);
+
+        Cursor reviewCursor = getActivity().getContentResolver().query(
+                MovieContract.ReviewEntry.CONTENT_URI,
+                new String[]{MovieContract.ReviewEntry._ID, MovieContract.ReviewEntry.COLUMN_REVIEW_AUTHOR, MovieContract.ReviewEntry.COLUMN_REVIEW_CONTENT},
+                MovieContract.ReviewEntry._ID + " = ?",
+                new String[]{movieId}, null);
+
+        mergeAdapter.addAdapter(new MovieDetailsAdapter_Header(getActivity(), cursor, 0));
+        mergeAdapter.addAdapter(new MovieDetailsAdapter_Reviews(getActivity(), reviewCursor, 0));
+        mergeAdapter.addAdapter(new MovieDetailsAdapter_Trailers(getActivity(), trailerCursor, 0));
+
+
+        listView.setAdapter(mergeAdapter);
         return rootView;
     }
 
@@ -97,19 +137,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data != null && data.moveToFirst()){
-            title.setText(data.getString(COL_MOVIE_TITLE));
-            double ratingDouble = data.getDouble(COL_MOVIE_VOTE_AVERAGE);
-            rating.setText(ratingDouble + "/10");
-            overview.setText(data.getString(COL_MOVIE_OVERVIEW));
-            releaseDate.setText(data.getString(COL_MOVIE_RELEASE_DATE));
-            Picasso.with(getActivity().getApplicationContext()).load(
-                    "http://image.tmdb.org/t/p/w342//" + data.getString(COL_MOVIE_POSTER_PATH))
-                    .placeholder(R.drawable.movie_loading)
-                    .resize(500,900)
-                    .centerInside()
-                    .into(poster);
-        }
+
     }
 
     @Override

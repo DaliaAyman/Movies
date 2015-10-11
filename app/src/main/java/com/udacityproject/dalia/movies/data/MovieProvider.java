@@ -3,10 +3,13 @@ package com.udacityproject.dalia.movies.data;
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+
+import com.udacityproject.dalia.movies.Utility;
 
 /**
  * Created by Dalia on 9/15/2015.
@@ -25,20 +28,41 @@ public class MovieProvider extends ContentProvider {
     static final int TRAILER = 400;
     static final int TRAILER_WITH_MOVIE_ID = 401;
 
-    //movie_most_popular._ID = ?
-    private String getMovieMostPopularIDSelection(int id){
-        String sMovieMostPopularIDSelection =
-                MovieContract.MovieEntryByMostPopular.TABLE_NAME + "."
-                + MovieContract.MovieEntryByMostPopular._ID + " = " + id;
-        return sMovieMostPopularIDSelection;
+    public static String getMovieIdFromUri(Context context, Uri uri){
+        Cursor cursor;
+        String sortOrder = Utility.getSortTypeFromPreferences(context);
+        switch (sortOrder){
+            case MovieContract.POPULARITY:{
+                long _id = MovieContract.MovieEntryByMostPopular.getMovieIDFromUri(uri);
+                cursor = context.getContentResolver().query(MovieContract.MovieEntryByMostPopular.CONTENT_URI,
+                        new String[]{MovieContract.MovieEntryByMostPopular._ID, MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_KEY},
+                        MovieContract.MovieEntryByMostPopular._ID + " = ?",
+                        new String[]{String.valueOf(_id)}, null);
+                if(cursor.moveToFirst()){
+                    int columnIndex = cursor.getColumnIndex(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_KEY);
+                    return cursor.getString(columnIndex);
+                }else{
+                    return null;
+                }
+            }
+            case MovieContract.VOTE_AVERAGE:{
+                long _id = MovieContract.MovieEntryByHighestRated.getMovieIDFromUri(uri);
+                cursor = context.getContentResolver().query(MovieContract.MovieEntryByHighestRated.CONTENT_URI,
+                        new String[]{MovieContract.MovieEntryByHighestRated._ID, MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_KEY},
+                        MovieContract.MovieEntryByHighestRated._ID + " = ?",
+                        new String[]{String.valueOf(_id)}, null);
+                if(cursor.moveToFirst()){
+                    int columnIndex = cursor.getColumnIndex(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_KEY);
+                    return cursor.getString(columnIndex);
+                }else{
+                    return null;
+                }
+            }
+            default:
+                throw new UnsupportedOperationException("Unknown Uri: " + uri);
+        }
     }
-    //movie_highest_rated._ID = ?
-    private String getMovieHighestRatedIDSelection(int id){
-        String sMovieHighestRatedIDSelection =
-                MovieContract.MovieEntryByHighestRated.TABLE_NAME + "."
-                        + MovieContract.MovieEntryByHighestRated._ID + " = " + id;
-        return sMovieHighestRatedIDSelection;
-    }
+
     @Override
     public boolean onCreate() {
         mOpenHelper = new MovieDbHelper(getContext());

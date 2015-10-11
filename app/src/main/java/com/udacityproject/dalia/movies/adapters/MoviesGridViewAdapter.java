@@ -1,8 +1,9 @@
-package com.udacityproject.dalia.movies.model;
+package com.udacityproject.dalia.movies.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ public class MoviesGridViewAdapter extends CursorAdapter {
 
         String moviePoster = cursor.getString(moviePosterColumn);
 
-        //Log.d("grid", "moviePoster = " + moviePoster);
+        Log.d("grid", "moviePoster = " + moviePoster);
 
         Picasso.with(context).load("http://image.tmdb.org/t/p/w185//" + moviePoster)
                 .placeholder(R.drawable.movie_loading)

@@ -16,7 +16,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.udacityproject.dalia.movies.data.MovieContract;
-import com.udacityproject.dalia.movies.model.MoviesGridViewAdapter;
+import com.udacityproject.dalia.movies.adapters.MoviesGridViewAdapter;
 
 /**
  * Created by Dalia on 9/15/2015.
@@ -100,14 +100,14 @@ public class MoviesHolderFragment extends Fragment implements LoaderManager.Load
         String sortOrderSetting = Utility.getSortTypeFromPreferences(getActivity());
 
         switch (sortOrderSetting){
-            case "popularity":
+            case MovieContract.POPULARITY:
                 return new CursorLoader(getActivity(),
                         MovieContract.MovieEntryByMostPopular.CONTENT_URI,
                         new String[]{MovieContract.MovieEntryByMostPopular._ID, MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH},
                         null, null,
                         null);
 
-            case "vote_average":
+            case MovieContract.VOTE_AVERAGE:
                 return new CursorLoader(getActivity(),
                         MovieContract.MovieEntryByHighestRated.CONTENT_URI,
                         new String[]{MovieContract.MovieEntryByHighestRated._ID, MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH},
