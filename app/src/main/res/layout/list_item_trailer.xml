@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/trailer_icon"
-        android:src="@drawable/user"
+        android:src="@drawable/play"
         />
 
     <TextView
@@ -18,6 +18,9 @@
         android:id="@+id/trailer_name"
         android:gravity="center_vertical"
         android:text="Trailer Name"
+        android:textSize="16dp"
+        android:paddingLeft="16dp"
+        android:textColor="@android:color/black"
         android:layout_toRightOf="@+id/trailer_icon"
         />
 </LinearLayout>

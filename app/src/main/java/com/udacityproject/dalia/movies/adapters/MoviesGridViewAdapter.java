@@ -30,6 +30,7 @@ public class MoviesGridViewAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
+        Log.d("grid", "bindView in gridview");
         ImageView imageView = (ImageView)view.findViewById(R.id.movie_image);
 
         String sortOrder = Utility.getSortTypeFromPreferences(context);
@@ -48,7 +49,7 @@ public class MoviesGridViewAdapter extends CursorAdapter {
 
         String moviePoster = cursor.getString(moviePosterColumn);
 
-        Log.d("grid", "moviePoster = " + moviePoster);
+        //Log.d("grid", "moviePoster = " + moviePoster);
 
         Picasso.with(context).load("http://image.tmdb.org/t/p/w185//" + moviePoster)
                 .placeholder(R.drawable.movie_loading)
@@ -60,6 +61,7 @@ public class MoviesGridViewAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        Log.d("grid", "newView in gridview");
         return LayoutInflater.from(context).inflate(R.layout.movie_grid_item, parent, false);
     }
 

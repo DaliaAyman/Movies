@@ -3,6 +3,7 @@ package com.udacityproject.dalia.movies.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +33,13 @@ public class MovieDetailsAdapter_Header extends CursorAdapter{
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        Log.d("grid", "newView in header");
         return LayoutInflater.from(context).inflate(R.layout.list_item_header, parent, false);
     }
 
     @Override
     public void bindView(View rootView, Context context, Cursor data) {
+        Log.d("grid", "bindView in header");
         TextView title = (TextView)rootView.findViewById(R.id.movie_title);
         TextView releaseDate = (TextView)rootView.findViewById(R.id.release_date);
         TextView rating = (TextView)rootView.findViewById(R.id.rating);

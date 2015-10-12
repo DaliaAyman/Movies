@@ -32,7 +32,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
     Context mContext;
 
     //TODO remove before publishing to Github
-    private final static String API_KEY = "";
+    private final static String API_KEY = "7c8fd8219025b80ee4f7471ac5571281";
     private final static String MOVIES_BASE_URL
             = "http://api.themoviedb.org/3/discover/movie";
     private final static String SORT_BY_PARAM = "sort_by";
@@ -302,20 +302,17 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
                 new String[]{MovieContract.TrailerEntry._ID},
                 MovieContract.TrailerEntry.COLUMN_MOVIE_KEY + " = ?",
                 new String[]{movie_key}, null);
-        if(trailerCursor.moveToFirst()){
-            int trailerIdIndex = trailerCursor.getColumnIndex(MovieContract.TrailerEntry._ID);
-            trailerId = trailerCursor.getLong(trailerIdIndex);
-        }else{
+
             //inserting
             ContentValues trailerValues = new ContentValues();
             trailerValues.put(MovieContract.TrailerEntry.COLUMN_MOVIE_KEY, movie_key);
             trailerValues.put(MovieContract.TrailerEntry.COLUMN_TRAILER_ID, trailer_id);
             trailerValues.put(MovieContract.TrailerEntry.COLUMN_TRAILER_VIDEO_KEY, video_key);
             trailerValues.put(MovieContract.TrailerEntry.COLUMN_TRAILER_NAME, name);
-
+            Log.d("grid", "trailerValues: " + movie_key + " " + trailer_id + " " + video_key + " " + name);
             Uri insertedUri = mContext.getContentResolver().insert(MovieContract.TrailerEntry.CONTENT_URI, trailerValues);
             trailerId = ContentUris.parseId(insertedUri);
-        }
+
         trailerCursor.close();
     }
 }

@@ -4,9 +4,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +20,12 @@ import com.udacityproject.dalia.movies.data.MovieProvider;
 /**
  * Created by Dalia on 9/28/2015.
  */
-public class MovieDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MovieDetailFragment extends Fragment{
 
-    private static final int DETAILS_LOADER = 0;
+    private static final int HEADER_DETAILS_LOADER = 3;
+    private static final int REVIEW_DETAILS_LOADER = 5;
+    private static final int TRAILER_DETAILS_LOADER = 4;
+
     static final String DETAIL_URI = "URI";
     public final static String POSITION = "position";
 
@@ -96,52 +97,31 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
 
         Cursor trailerCursor = getActivity().getContentResolver().query(
                 MovieContract.TrailerEntry.CONTENT_URI,
-                new String[]{MovieContract.TrailerEntry._ID, MovieContract.TrailerEntry.COLUMN_MOVIE_KEY, MovieContract.TrailerEntry.COLUMN_TRAILER_NAME},
-                MovieContract.TrailerEntry._ID + " = ?",
+                new String[]{MovieContract.TrailerEntry._ID, MovieContract.TrailerEntry.COLUMN_TRAILER_VIDEO_KEY, MovieContract.TrailerEntry.COLUMN_TRAILER_NAME},
+                MovieContract.TrailerEntry.COLUMN_MOVIE_KEY + " = ?",
                 new String[]{movieId},null);
 
         Cursor reviewCursor = getActivity().getContentResolver().query(
                 MovieContract.ReviewEntry.CONTENT_URI,
                 new String[]{MovieContract.ReviewEntry._ID, MovieContract.ReviewEntry.COLUMN_REVIEW_AUTHOR, MovieContract.ReviewEntry.COLUMN_REVIEW_CONTENT},
-                MovieContract.ReviewEntry._ID + " = ?",
+                MovieContract.ReviewEntry.COLUMN_MOVIE_KEY + " = ?",
                 new String[]{movieId}, null);
 
         mergeAdapter.addAdapter(new MovieDetailsAdapter_Header(getActivity(), cursor, 0));
-        mergeAdapter.addAdapter(new MovieDetailsAdapter_Reviews(getActivity(), reviewCursor, 0));
+        mergeAdapter.addView(LayoutInflater.from(getActivity()).inflate(R.layout.list_item_trailer_label, container, false));
         mergeAdapter.addAdapter(new MovieDetailsAdapter_Trailers(getActivity(), trailerCursor, 0));
+        mergeAdapter.addView(LayoutInflater.from(getActivity()).inflate(R.layout.list_item_review_label, container, false));
+        mergeAdapter.addAdapter(new MovieDetailsAdapter_Reviews(getActivity(), reviewCursor, 0));
 
 
         listView.setAdapter(mergeAdapter);
+        Log.d("grid", "mergeAdapter set");
         return rootView;
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(DETAILS_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if(mUri != null){
-            String sortOrderSetting = Utility.getSortTypeFromPreferences(getActivity());
-            switch (sortOrderSetting){
-                case MovieContract.POPULARITY:
-                    return new CursorLoader(getActivity(), mUri, MOVIE_MOST_POPULAR_COLUMNS, null, null, null);
-                case MovieContract.VOTE_AVERAGE:
-                    return new CursorLoader(getActivity(), mUri, MOVIE_HIGHEST_RATED_COLUMNS, null, null, null);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }

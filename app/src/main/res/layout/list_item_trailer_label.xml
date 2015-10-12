@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/abc_text_size_display_1_material"
+        android:textSize="32dp"
         android:text="Trailers"
         android:padding="16dp"
         android:textColor="@android:color/black"/>
