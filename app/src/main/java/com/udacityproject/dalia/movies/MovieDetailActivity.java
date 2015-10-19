@@ -17,7 +17,15 @@ public class MovieDetailActivity extends ActionBarActivity {
         if (savedInstanceState == null){
             Bundle arguments = new Bundle();
             arguments.putParcelable(MovieDetailFragment.DETAIL_URI, getIntent().getData());
-
+            //Log.d("grid", "here " + getIntent().getStringExtra(MovieDetailFragment.IS_FAVORITE));
+            //Bundle receivedArgs = get
+            String _isFav="";
+            Intent intent = this.getIntent();
+            if(intent != null)
+                _isFav = intent.getExtras().getString("fav");
+            if(_isFav != null){
+                arguments.putInt(MovieDetailFragment.MOVIE_URI, Integer.parseInt(_isFav));
+            }
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
 

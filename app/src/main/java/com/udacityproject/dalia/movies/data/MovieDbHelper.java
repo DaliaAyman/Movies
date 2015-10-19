@@ -12,7 +12,7 @@ import static com.udacityproject.dalia.movies.data.MovieContract.MovieEntryByMos
  */
 public class MovieDbHelper extends SQLiteOpenHelper{
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
 
     static final String DATABASE_NAME = "movies.db";
 
@@ -66,10 +66,21 @@ public class MovieDbHelper extends SQLiteOpenHelper{
                 MovieEntryByHighestRated.TABLE_NAME + "(" + MovieEntryByHighestRated.COLUMN_MOVIE_KEY + ")," +
                 " UNIQUE (" + MovieContract.TrailerEntry.COLUMN_TRAILER_ID + " ) ON CONFLICT REPLACE);";
 
+        final String SQL_CREATE_FAVORITE = "CREATE TABLE " + MovieContract.FavoriteMovie.TABLE_NAME + " (" +
+                MovieContract.FavoriteMovie._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                MovieContract.FavoriteMovie.COLUMN_MOVIE_KEY + " INTEGER NOT NULL," +
+                MovieContract.FavoriteMovie.COLUMN_MOVIE_TITLE + " TEXT NOT NULL," +
+                MovieContract.FavoriteMovie.COLUMN_MOVIE_POSTER_PATH + " TEXT NOT NULL," +
+                MovieContract.FavoriteMovie.COLUMN_MOVIE_OVERVIEW + " TEXT NOT NULL," +
+                MovieContract.FavoriteMovie.COLUMN_MOVIE_VOTE_AVERAGE + " REAL NOT NULL," +
+                MovieContract.FavoriteMovie.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL, " +
+                " UNIQUE (" + MovieContract.FavoriteMovie.COLUMN_MOVIE_KEY + " ) ON CONFLICT REPLACE);";
+
         db.execSQL(SQL_CREATE_MOVIE_TABLE_MOST_POPULAR);
         db.execSQL(SQL_CREATE_MOVIE_TABLE_HIGHEST_RATED);
         db.execSQL(SQL_CREATE_REVIEW_TABLE);
         db.execSQL(SQL_CREATE_TRAILER_TABLE);
+        db.execSQL(SQL_CREATE_FAVORITE);
     }
 
     @Override
@@ -78,6 +89,8 @@ public class MovieDbHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + MovieEntryByHighestRated.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MovieContract.ReviewEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MovieContract.TrailerEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MovieContract.FavoriteMovie.TABLE_NAME);
+
         onCreate(db);
     }
 }

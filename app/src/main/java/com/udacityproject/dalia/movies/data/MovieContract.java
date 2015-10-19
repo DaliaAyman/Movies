@@ -19,6 +19,7 @@ public class MovieContract {
     public static final String PATH_MOVIE_HIGHEST_RATED = "movie_highest_rated";
     public static final String PATH_REVIEW = "review";
     public static final String PATH_TRAILER = "trailer";
+    public static final String PATH_FAVORITE = "favorite";
 
     //sort types
     public static final String POPULARITY = "popularity";
@@ -53,6 +54,15 @@ public class MovieContract {
         public static long getMovieIDFromUri(Uri uri){
             return ContentUris.parseId(uri);
         }
+
+        public static long getMovieKeyFromUri(Uri uri){
+            String movieKey = uri.getQueryParameter(COLUMN_MOVIE_KEY);
+            if(movieKey != null){
+                return Long.parseLong(movieKey);
+            }else{
+                return 0;
+            }
+        }
     }
 
 
@@ -83,6 +93,15 @@ public class MovieContract {
 
         public static int getMovieIDFromUri(Uri uri){
             return Integer.parseInt(uri.getPathSegments().get(1));
+        }
+
+        public static long getMovieKeyFromUri(Uri uri){
+            String movieKey = uri.getQueryParameter(COLUMN_MOVIE_KEY);
+            if(movieKey != null){
+                return Long.parseLong(movieKey);
+            }else{
+                return 0;
+            }
         }
     }
 
@@ -158,4 +177,42 @@ public class MovieContract {
         }
     }
 
+    /* Inner class that defines the table contents of the movie most popular table */
+    public static class FavoriteMovie implements BaseColumns{
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITE).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITE;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITE;
+
+        public static final String TABLE_NAME = "favorite";
+
+        //Columns
+        public static final String COLUMN_MOVIE_KEY = "movie_id"; //id from the backend
+
+        public static final String COLUMN_MOVIE_TITLE = "title";
+        public static final String COLUMN_MOVIE_OVERVIEW = "overview";
+        public static final String COLUMN_MOVIE_POSTER_PATH = "poster_path";
+        public static final String COLUMN_MOVIE_VOTE_AVERAGE = "vote_average";
+        public static final String COLUMN_MOVIE_RELEASE_DATE = "release_date";
+
+        public static Uri buildMovieUri(long id){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static long getMovieIDFromUri(Uri uri){
+            return ContentUris.parseId(uri);
+        }
+
+        public static long getMovieKeyFromUri(Uri uri){
+            String movieKey = uri.getQueryParameter(COLUMN_MOVIE_KEY);
+            if(movieKey != null){
+                return Long.parseLong(movieKey);
+            }else{
+                return 0;
+            }
+        }
+    }
 }

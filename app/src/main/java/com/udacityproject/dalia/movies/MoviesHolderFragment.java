@@ -29,6 +29,7 @@ public class MoviesHolderFragment extends Fragment implements LoaderManager.Load
     private FetchMoviesTask task;
 
     private static final int MOVIES_LOADER = 0;
+
     public MoviesHolderFragment() {
     }
 
@@ -78,12 +79,14 @@ public class MoviesHolderFragment extends Fragment implements LoaderManager.Load
                             MOVIE_ID_COL = currentData.getColumnIndex(MovieContract.MovieEntryByMostPopular._ID);
                             movieUri = MovieContract.MovieEntryByMostPopular.buildMovieUri(currentData.getInt(MOVIE_ID_COL));
                             detailsIntent.setData(movieUri);
+                            detailsIntent.putExtra("fav", 0);
                             break;
                         }
                         case MovieContract.VOTE_AVERAGE: {
                             MOVIE_ID_COL = currentData.getColumnIndex(MovieContract.MovieEntryByHighestRated._ID);
                             movieUri = MovieContract.MovieEntryByHighestRated.buildMovieUri(currentData.getInt(MOVIE_ID_COL));
                             detailsIntent.setData(movieUri);
+                            detailsIntent.putExtra("fav", 0);
                             break;
                         }
                     }

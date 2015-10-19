@@ -34,7 +34,6 @@ public class MovieDetailsAdapter_Trailers extends CursorAdapter {
         String nameString = cursor.getString(nameColumn);
         name.setText(nameString);
 
-        //TODO intent to youtube link
         int linkColumn = cursor.getColumnIndex(MovieContract.TrailerEntry.COLUMN_TRAILER_VIDEO_KEY);
         final String keyString = cursor.getString(linkColumn);
 

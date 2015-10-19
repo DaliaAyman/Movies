@@ -122,98 +122,105 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
         return null;
     }
 
-    public void getMoviesDataFromJSON(String moviesStr) throws JSONException{
+    public void getMoviesDataFromJSON(String moviesStr) throws JSONException {
 
         JSONObject moviesObject = new JSONObject(moviesStr);
         JSONArray resultsArray = moviesObject.getJSONArray("results");
 
         Vector<ContentValues> cVVector = new Vector<ContentValues>(resultsArray.length());
         String sortType = "";
-        for(int i=0; i<resultsArray.length(); i++){
+        for (int i = 0; i < resultsArray.length(); i++) {
             JSONObject movieObj = resultsArray.getJSONObject(i);
 
             String key = movieObj.getString("id");
 
             String reviewsJSON = getReviewsOrTrailersJson(key, REVIEWS_PARAM);
-            //Log.d("grid", "reviewsJSON: " + reviewsJSON);
-            JSONObject reviewsObject = new JSONObject(reviewsJSON);
-            JSONArray reviewsResultsArray = reviewsObject.getJSONArray("results");
-            //Log.d("grid", "reviewResultsArray length: " + reviewsResultsArray.length());
-            if(reviewsResultsArray.length() != 0){
+            if(reviewsJSON.equals("empty")){
 
-            }
-            for(int j=0; j<reviewsResultsArray.length(); j++){
-                JSONObject reviewObj = reviewsResultsArray.getJSONObject(j);
-                String review_id = reviewObj.getString("id");
-                String author = reviewObj.getString("author");
-                String content = reviewObj.getString("content");
-                long reviewId = addReviews(key, review_id, author, content);
-            }
+            }else {
+                JSONObject reviewsObject = new JSONObject(reviewsJSON);
+                JSONArray reviewsResultsArray = reviewsObject.getJSONArray("results");
 
+                for (int j = 0; j < reviewsResultsArray.length(); j++) {
+                    JSONObject reviewObj = reviewsResultsArray.getJSONObject(j);
+                    String review_id = reviewObj.getString("id");
+                    String author = reviewObj.getString("author");
+                    String content = reviewObj.getString("content");
+                    long reviewId = addReviews(key, review_id, author, content);
+                }
+            }
             String trailersJSON = getReviewsOrTrailersJson(key, TRAILERS_PARAM);
-            JSONObject trailersObject = new JSONObject(trailersJSON);
-            JSONArray trailersResultsArray = trailersObject.getJSONArray("results");
+            if (trailersJSON.equals("empty")) {
 
-            for(int k=0; k<trailersResultsArray.length(); k++){
-                JSONObject trailerObj = trailersResultsArray.getJSONObject(k);
-                String trailer_id = trailerObj.getString("id");
-                String video_key = trailerObj.getString("key");
-                String name = trailerObj.getString("name");
-                addTrailers(key, trailer_id, video_key, name);
-            }
+            } else {
+                JSONObject trailersObject = new JSONObject(trailersJSON);
+                JSONArray trailersResultsArray = trailersObject.getJSONArray("results");
 
-            String title = movieObj.getString("title");
-            String overview = movieObj.getString("overview");
-            String posterPath = movieObj.getString("poster_path");
-            double voteAverage = movieObj.getDouble("vote_average");
-            String releaseDate = movieObj.getString("release_date");
-
-            Movie m = new Movie(key, title, overview, posterPath, voteAverage, releaseDate);
-            //Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
-
-            sortType = Utility.getSortTypeFromPreferences(mContext);
-            ContentValues movieValues = new ContentValues();
-            switch (sortType){
-                case MovieContract.POPULARITY: {
-                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_KEY, key);
-                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_TITLE, title);
-                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH, posterPath);
-                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW, overview);
-                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
-                    movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
-                    break;
+                for (int k = 0; k < trailersResultsArray.length(); k++) {
+                    JSONObject trailerObj = trailersResultsArray.getJSONObject(k);
+                    String trailer_id = trailerObj.getString("id");
+                    String video_key = trailerObj.getString("key");
+                    String name = trailerObj.getString("name");
+                    addTrailers(key, trailer_id, video_key, name);
                 }
-                case MovieContract.VOTE_AVERAGE: {
-                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_KEY, key);
-                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_TITLE, title);
-                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH, posterPath);
-                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW, overview);
-                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
-                    movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
-                    break;
-                }
-                default:
-                    throw new UnsupportedOperationException("Unknown sort type: " + sortType);
-            }
-            cVVector.add(movieValues);
-        }
-        int inserted = 0;
-        if(cVVector.size() > 0){
-            ContentValues[] cVArray = new ContentValues[cVVector.size()];
-            cVVector.toArray(cVArray);
-            switch (sortType){
-                case MovieContract.POPULARITY:{
-                    inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntryByMostPopular.CONTENT_URI, cVArray);
-                    break;
-                }case MovieContract.VOTE_AVERAGE: {
-                    inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntryByHighestRated.CONTENT_URI, cVArray);
-                    break;
-                }default:
-                    throw new UnsupportedOperationException("Unknown sort type: " + sortType);
             }
 
-            Log.d("grid", "FetchMoviesTask complete " + inserted + " inserted");
-        }
+                String title = movieObj.getString("title");
+                String overview = movieObj.getString("overview");
+                String posterPath = movieObj.getString("poster_path");
+                double voteAverage = movieObj.getDouble("vote_average");
+                String releaseDate = movieObj.getString("release_date");
+
+                Movie m = new Movie(key, title, overview, posterPath, voteAverage, releaseDate);
+                //Log.d("grid", "m: " + m.getTitle() + ", " + m.getOverview() + ", " + m.getPosterPath() + ", " + m.getVoteAverage());
+
+                sortType = Utility.getSortTypeFromPreferences(mContext);
+                ContentValues movieValues = new ContentValues();
+                switch (sortType) {
+                    case MovieContract.POPULARITY: {
+                        movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_KEY, key);
+                        movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_TITLE, title);
+                        movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_POSTER_PATH, posterPath);
+                        movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_OVERVIEW, overview);
+                        movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
+                        movieValues.put(MovieContract.MovieEntryByMostPopular.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
+                        break;
+                    }
+                    case MovieContract.VOTE_AVERAGE: {
+                        movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_KEY, key);
+                        movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_TITLE, title);
+                        movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_POSTER_PATH, posterPath);
+                        movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_OVERVIEW, overview);
+                        movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_VOTE_AVERAGE, voteAverage);
+                        movieValues.put(MovieContract.MovieEntryByHighestRated.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
+                        break;
+                    }
+                    default:
+                        throw new UnsupportedOperationException("Unknown sort type: " + sortType);
+                }
+                cVVector.add(movieValues);
+            }
+            int inserted = 0;
+            if (cVVector.size() > 0) {
+                ContentValues[] cVArray = new ContentValues[cVVector.size()];
+                cVVector.toArray(cVArray);
+                switch (sortType) {
+                    case MovieContract.POPULARITY: {
+                        inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntryByMostPopular.CONTENT_URI, cVArray);
+                        break;
+                    }
+                    case MovieContract.VOTE_AVERAGE: {
+                        inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntryByHighestRated.CONTENT_URI, cVArray);
+                        break;
+                    }
+                    default:
+                        throw new UnsupportedOperationException("Unknown sort type: " + sortType);
+                }
+
+                Log.d("grid", "FetchMoviesTask complete " + inserted + " inserted");
+            }
+
+
     }
     String getReviewsOrTrailersJson(String movie_key, String PARAM){
         HttpURLConnection httpURLConnection = null;
@@ -230,26 +237,34 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
             httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.connect();
+            if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
+                //handle the accepted response
+                //reading input stream to string
+                InputStream inputStream = httpURLConnection.getInputStream();
+                StringBuffer stringBuffer = new StringBuffer();
 
-            //reading input stream to string
-            InputStream inputStream = httpURLConnection.getInputStream();
-            StringBuffer stringBuffer = new StringBuffer();
+                if(inputStream == null){
+                    return null;
+                }
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-            if(inputStream == null){
-                return null;
+                String line;
+                while((line = bufferedReader.readLine()) != null){
+                    stringBuffer.append(line + "\n");
+                }
+
+                if(stringBuffer.length() == 0){ //stream was empty
+                    return null;
+                }
+
+                returnJson = stringBuffer.toString();
             }
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while((line = bufferedReader.readLine()) != null){
-                stringBuffer.append(line + "\n");
+            else
+            {
+                //handle the failed response
+                returnJson = "empty";
             }
 
-            if(stringBuffer.length() == 0){ //stream was empty
-                return null;
-            }
-
-            returnJson = stringBuffer.toString();
 
         }catch (IOException e){
             Log.e("NetworkConnection", "Error handling url", e);
@@ -309,7 +324,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
             trailerValues.put(MovieContract.TrailerEntry.COLUMN_TRAILER_ID, trailer_id);
             trailerValues.put(MovieContract.TrailerEntry.COLUMN_TRAILER_VIDEO_KEY, video_key);
             trailerValues.put(MovieContract.TrailerEntry.COLUMN_TRAILER_NAME, name);
-            Log.d("grid", "trailerValues: " + movie_key + " " + trailer_id + " " + video_key + " " + name);
+            //Log.d("grid", "trailerValues: " + movie_key + " " + trailer_id + " " + video_key + " " + name);
             Uri insertedUri = mContext.getContentResolver().insert(MovieContract.TrailerEntry.CONTENT_URI, trailerValues);
             trailerId = ContentUris.parseId(insertedUri);
 

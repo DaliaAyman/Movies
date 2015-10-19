@@ -1,8 +1,9 @@
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
         <!-- Header -->
         <RelativeLayout
@@ -15,7 +16,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name"
+                android:text="Movie Name"
                 android:textSize="32dp"
                 android:id="@+id/movie_title"
                 android:textColor="@android:color/white"/>
@@ -63,14 +64,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rating"
+                        android:layout_alignBottom="@+id/favorite_icon"
                         android:text="rating"/>
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/favourite"
+                        android:id="@+id/favorite_icon"
+                        android:src="@drawable/favorite_0"
                         android:layout_toRightOf="@+id/rating"
                         android:paddingLeft="16dp"
+                        android:background="#0000"
                         />
                 </RelativeLayout>
 

@@ -50,8 +50,11 @@ public class HomeActivity extends ActionBarActivity implements MoviesHolderFragm
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
             return true;
+        }else if(id == R.id.action_favorites){
+            Intent intent = new Intent(getApplicationContext(), FavoritesActivity.class);
+            startActivity(intent);
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -68,6 +71,7 @@ public class HomeActivity extends ActionBarActivity implements MoviesHolderFragm
                     .replace(R.id.movie_detail_container, detailFragment, DETAILFRAGMENT_TAG)
                     .commit();
         }else{
+            Log.d("grid", "onItemSelected callback");
             Intent intent = new Intent(getApplicationContext(), MovieDetailActivity.class);
             startActivity(intent);
         }
