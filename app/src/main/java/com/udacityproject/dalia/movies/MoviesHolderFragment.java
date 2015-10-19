@@ -86,7 +86,7 @@ public class MoviesHolderFragment extends Fragment implements LoaderManager.Load
                             MOVIE_ID_COL = currentData.getColumnIndex(MovieContract.MovieEntryByHighestRated._ID);
                             movieUri = MovieContract.MovieEntryByHighestRated.buildMovieUri(currentData.getInt(MOVIE_ID_COL));
                             detailsIntent.setData(movieUri);
-                            detailsIntent.putExtra("fav", 0);
+                            detailsIntent.putExtra("fav", "0");
                             break;
                         }
                     }

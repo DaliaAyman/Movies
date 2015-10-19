@@ -53,7 +53,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
                     int MOVIE_ID_COL = currentData.getColumnIndex(MovieContract.FavoriteMovie._ID);
                     Uri movieUri = MovieContract.FavoriteMovie.buildMovieUri(currentData.getInt(MOVIE_ID_COL));
-                    detailsIntent.putExtra("fav", 1);
+                    detailsIntent.putExtra("fav", "1");
                     detailsIntent.setData(movieUri);
                     startActivity(detailsIntent);
                 }

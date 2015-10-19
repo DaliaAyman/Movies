@@ -54,15 +54,6 @@ public class MovieContract {
         public static long getMovieIDFromUri(Uri uri){
             return ContentUris.parseId(uri);
         }
-
-        public static long getMovieKeyFromUri(Uri uri){
-            String movieKey = uri.getQueryParameter(COLUMN_MOVIE_KEY);
-            if(movieKey != null){
-                return Long.parseLong(movieKey);
-            }else{
-                return 0;
-            }
-        }
     }
 
 
@@ -93,15 +84,6 @@ public class MovieContract {
 
         public static int getMovieIDFromUri(Uri uri){
             return Integer.parseInt(uri.getPathSegments().get(1));
-        }
-
-        public static long getMovieKeyFromUri(Uri uri){
-            String movieKey = uri.getQueryParameter(COLUMN_MOVIE_KEY);
-            if(movieKey != null){
-                return Long.parseLong(movieKey);
-            }else{
-                return 0;
-            }
         }
     }
 
@@ -204,15 +186,6 @@ public class MovieContract {
 
         public static long getMovieIDFromUri(Uri uri){
             return ContentUris.parseId(uri);
-        }
-
-        public static long getMovieKeyFromUri(Uri uri){
-            String movieKey = uri.getQueryParameter(COLUMN_MOVIE_KEY);
-            if(movieKey != null){
-                return Long.parseLong(movieKey);
-            }else{
-                return 0;
-            }
         }
     }
 }

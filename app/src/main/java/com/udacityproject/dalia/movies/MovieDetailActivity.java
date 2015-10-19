@@ -20,9 +20,12 @@ public class MovieDetailActivity extends ActionBarActivity {
             //Log.d("grid", "here " + getIntent().getStringExtra(MovieDetailFragment.IS_FAVORITE));
             //Bundle receivedArgs = get
             String _isFav="";
-            Intent intent = this.getIntent();
-            if(intent != null)
-                _isFav = intent.getExtras().getString("fav");
+            Bundle extras = getIntent().getExtras();
+            if(extras == null){
+                _isFav = "0";
+            }else{
+                _isFav = extras.getString("fav");
+            }
             if(_isFav != null){
                 arguments.putInt(MovieDetailFragment.MOVIE_URI, Integer.parseInt(_isFav));
             }

@@ -12,7 +12,7 @@ import static com.udacityproject.dalia.movies.data.MovieContract.MovieEntryByMos
  */
 public class MovieDbHelper extends SQLiteOpenHelper{
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     static final String DATABASE_NAME = "movies.db";
 

@@ -125,7 +125,6 @@ public class MovieDetailFragment extends Fragment{
         mergeAdapter.addView(LayoutInflater.from(getActivity()).inflate(R.layout.list_item_review_label, container, false));
         mergeAdapter.addAdapter(new MovieDetailsAdapter_Reviews(getActivity(), reviewCursor, 0));
 
-
         listView.setAdapter(mergeAdapter);
         Log.d("grid", "mergeAdapter set");
         return rootView;
